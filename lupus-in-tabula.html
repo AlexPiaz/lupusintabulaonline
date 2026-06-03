@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lupus in Tabula — Il Gioco dei Sospetti</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --blood: #8B0000;
+    --blood-light: #C41E3A;
+    --blood-dark: #4A0000;
+    --moon: #F4E8C1;
+    --moon-dark: #D4C49A;
+    --shadow: #0D0D0D;
+    --ink: #1A1A1A;
+    --parchment: #F9F3E3;
+    --parchment-dark: #EDE4CE;
+    --forest: #1B3A2D;
+    --silver: #C0C0C0;
+    --gold: #C9A84C;
+    --gold-light: #E8C86A;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--shadow);
+    color: var(--moon);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: 18px;
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ─── CURSOR ─── */
+  body { cursor: crosshair; }
+  a, button { cursor: crosshair; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: linear-gradient(180deg, rgba(13,13,13,0.98) 0%, rgba(13,13,13,0) 100%);
+    border-bottom: 1px solid rgba(139,0,0,0.2);
+  }
+
+  .nav-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    color: var(--blood-light);
+    text-decoration: none;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--moon-dark);
+    text-decoration: none;
+    transition: color 0.3s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--blood-light);
+    transition: width 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--moon); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    padding: 0 2rem;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(139,0,0,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 30% 70%, rgba(27,58,45,0.15) 0%, transparent 50%),
+      radial-gradient(ellipse 50% 50% at 70% 20%, rgba(74,0,0,0.1) 0%, transparent 50%),
+      var(--shadow);
+  }
+
+  .moon-circle {
+    position: absolute;
+    top: 8%;
+    right: 12%;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fff8e1 0%, var(--moon) 40%, var(--moon-dark) 80%, #8a7a50 100%);
+    box-shadow: 0 0 60px rgba(244,232,193,0.15), 0 0 120px rgba(244,232,193,0.05);
+    opacity: 0.85;
+    animation: moonPulse 6s ease-in-out infinite;
+  }
+
+  @keyframes moonPulse {
+    0%, 100% { box-shadow: 0 0 60px rgba(244,232,193,0.15), 0 0 120px rgba(244,232,193,0.05); }
+    50% { box-shadow: 0 0 80px rgba(244,232,193,0.25), 0 0 160px rgba(244,232,193,0.08); }
+  }
+
+  .trees {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 35%;
+    background: linear-gradient(180deg, transparent 0%, rgba(15,25,18,0.6) 40%, rgba(10,18,13,0.95) 100%);
+  }
+
+  .trees-svg {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    opacity: 0.7;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--blood-light);
+    margin-bottom: 1.5rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    line-height: 0.95;
+    color: var(--moon);
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 1s ease 0.4s both;
+    text-shadow: 0 0 80px rgba(139,0,0,0.4);
+  }
+
+  .hero-title span {
+    display: block;
+    color: var(--blood-light);
+    font-size: 0.55em;
+    letter-spacing: 0.05em;
+    margin-top: 0.3em;
+  }
+
+  .hero-subtitle {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--moon-dark);
+    max-width: 540px;
+    margin: 2rem auto 0;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 1s ease 0.6s both;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 3rem;
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 1s ease 0.8s both;
+  }
+
+  .btn-primary {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--shadow);
+    background: var(--blood-light);
+    border: none;
+    padding: 1rem 2.5rem;
+    text-decoration: none;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--blood);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+
+  .btn-primary:hover::before { transform: scaleX(1); }
+  .btn-primary span { position: relative; z-index: 1; }
+  .btn-primary:hover { color: var(--moon); }
+
+  .btn-secondary {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--moon-dark);
+    background: transparent;
+    border: 1px solid rgba(244,232,193,0.3);
+    padding: 1rem 2.5rem;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--moon);
+    color: var(--moon);
+    background: rgba(244,232,193,0.05);
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 1;
+    animation: fadeUp 1s ease 1.2s both;
+  }
+
+  .scroll-hint span {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(244,232,193,0.4);
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 50px;
+    background: linear-gradient(180deg, rgba(244,232,193,0.4) 0%, transparent 100%);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine {
+    0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+    50% { transform: scaleY(1); opacity: 1; }
+    100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── DIVIDER ─── */
+  .ornamental-divider {
+    text-align: center;
+    margin: 4rem 0;
+    color: var(--blood);
+    font-size: 1.5rem;
+    letter-spacing: 1rem;
+    opacity: 0.6;
+    position: relative;
+  }
+
+  .ornamental-divider::before,
+  .ornamental-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(139,0,0,0.4), transparent);
+  }
+
+  .ornamental-divider::before { left: 5%; }
+  .ornamental-divider::after { right: 5%; }
+
+  /* ─── SECTIONS ─── */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 4rem;
+  }
+
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--blood-light);
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .section-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    color: var(--moon);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ─── ABOUT SECTION ─── */
+  #about {
+    padding: 8rem 0;
+    background: linear-gradient(180deg, var(--shadow) 0%, rgba(27,20,12,0.95) 50%, var(--shadow) 100%);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .about-text p {
+    color: var(--moon-dark);
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+  }
+
+  .about-text p em {
+    color: var(--moon);
+    font-style: italic;
+  }
+
+  .parchment-card {
+    background: var(--parchment);
+    padding: 3rem;
+    position: relative;
+    color: var(--ink);
+  }
+
+  .parchment-card::before {
+    content: '';
+    position: absolute;
+    inset: 8px;
+    border: 1px solid rgba(26,26,26,0.2);
+    pointer-events: none;
+  }
+
+  .parchment-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 4px;
+    background: var(--blood);
+  }
+
+  .parchment-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--blood);
+    margin-bottom: 1.5rem;
+  }
+
+  .parchment-body {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--ink);
+  }
+
+  .parchment-signature {
+    margin-top: 1.5rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    color: var(--blood-dark);
+    text-align: right;
+    letter-spacing: 0.1em;
+  }
+
+  /* ─── RUOLI / CARDS ─── */
+  #ruoli {
+    padding: 8rem 0;
+    background: var(--shadow);
+  }
+
+  .ruoli-header {
+    text-align: center;
+    margin-bottom: 5rem;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .role-card {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 2/3;
+    cursor: crosshair;
+  }
+
+  .role-card-bg {
+    position: absolute;
+    inset: 0;
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .role-card:hover .role-card-bg { transform: scale(1.08); }
+
+  .card-villagers .role-card-bg {
+    background: linear-gradient(160deg, #1a3a1a 0%, #0d2010 40%, #050e07 100%);
+  }
+
+  .card-lupo .role-card-bg {
+    background: linear-gradient(160deg, #3a0a0a 0%, #1a0505 40%, #0a0202 100%);
+  }
+
+  .card-veggente .role-card-bg {
+    background: linear-gradient(160deg, #1a1a3a 0%, #0d0d20 40%, #050508 100%);
+  }
+
+  .card-strega .role-card-bg {
+    background: linear-gradient(160deg, #2a1a3a 0%, #180d22 40%, #0a0510 100%);
+  }
+
+  .card-cacciatore .role-card-bg {
+    background: linear-gradient(160deg, #2a1a0a 0%, #1a0d05 40%, #0e0702 100%);
+  }
+
+  .card-cupido .role-card-bg {
+    background: linear-gradient(160deg, #3a1a2a 0%, #1f0d17 40%, #0e060c 100%);
+  }
+
+  .role-card-symbol {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    font-size: 4.5rem;
+    opacity: 0.15;
+    transition: opacity 0.4s, transform 0.4s;
+    user-select: none;
+  }
+
+  .role-card:hover .role-card-symbol {
+    opacity: 0.25;
+    transform: translate(-50%, -65%) scale(1.1);
+  }
+
+  .role-card-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 2rem 1.5rem;
+    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+    transform: translateY(30%);
+    transition: transform 0.4s ease;
+  }
+
+  .role-card:hover .role-card-content { transform: translateY(0); }
+
+  .role-name {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    color: var(--moon);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+  }
+
+  .role-team {
+    font-family: 'Cinzel', serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+  }
+
+  .card-villagers .role-team,
+  .card-cacciatore .role-team,
+  .card-veggente .role-team,
+  .card-strega .role-team,
+  .card-cupido .role-team { color: #6ab04c; }
+
+  .card-lupo .role-team { color: var(--blood-light); }
+
+  .role-desc {
+    font-family: 'EB Garamond', serif;
+    font-size: 0.9rem;
+    color: rgba(212,196,154,0.8);
+    line-height: 1.6;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+  }
+
+  .role-card:hover .role-desc {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .role-border {
+    position: absolute;
+    inset: 0;
+    border: 1px solid transparent;
+    transition: border-color 0.4s;
+    pointer-events: none;
+  }
+
+  .card-lupo:hover .role-border { border-color: rgba(196,30,58,0.4); }
+  .card-veggente:hover .role-border { border-color: rgba(80,80,200,0.3); }
+  .card-strega:hover .role-border { border-color: rgba(120,50,180,0.3); }
+  .card-cacciatore:hover .role-border { border-color: rgba(180,120,30,0.3); }
+  .card-villagers:hover .role-border { border-color: rgba(80,160,60,0.3); }
+  .card-cupido:hover .role-border { border-color: rgba(196,60,100,0.3); }
+
+  /* ─── COME SI GIOCA ─── */
+  #regole {
+    padding: 8rem 0;
+    background: linear-gradient(180deg, var(--shadow) 0%, rgba(10,5,2,1) 100%);
+  }
+
+  .regole-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .phase-list {
+    list-style: none;
+    counter-reset: phase-counter;
+  }
+
+  .phase-item {
+    counter-increment: phase-counter;
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1.5rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid rgba(244,232,193,0.08);
+    position: relative;
+  }
+
+  .phase-item:last-child { border-bottom: none; }
+
+  .phase-number {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2rem;
+    color: var(--blood);
+    line-height: 1;
+    padding-top: 0.2rem;
+    opacity: 0.5;
+  }
+
+  .phase-title {
+    font-family: 'Cinzel', serif;
+    font-size: 1rem;
+    color: var(--moon);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+  }
+
+  .phase-desc {
+    font-size: 0.95rem;
+    color: var(--moon-dark);
+    opacity: 0.8;
+  }
+
+  .rules-aside {
+    position: sticky;
+    top: 6rem;
+  }
+
+  .rules-blockquote {
+    border-left: 3px solid var(--blood);
+    padding-left: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .rules-blockquote p {
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--moon-dark);
+    margin-bottom: 0.5rem;
+  }
+
+  .rules-blockquote cite {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--blood-light);
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: rgba(244,232,193,0.06);
+    border: 1px solid rgba(244,232,193,0.06);
+  }
+
+  .stat-item {
+    background: var(--shadow);
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .stat-number {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2.5rem;
+    color: var(--moon);
+    display: block;
+  }
+
+  .stat-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--blood-light);
+    margin-top: 0.25rem;
+    display: block;
+  }
+
+  /* ─── ACQUISTA ─── */
+  #acquista {
+    padding: 10rem 0;
+    text-align: center;
+    background: var(--forest);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #acquista::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(139,0,0,0.15) 0%, transparent 70%);
+  }
+
+  .acquista-inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .price-display {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 5rem;
+    color: var(--moon);
+    margin: 2rem 0 0.5rem;
+    line-height: 1;
+  }
+
+  .price-note {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--moon-dark);
+    opacity: 0.6;
+  }
+
+  .product-features {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin: 3rem 0;
+    list-style: none;
+  }
+
+  .product-features li {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--moon-dark);
+    opacity: 0.7;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .product-features li::before {
+    content: '✦';
+    color: var(--blood-light);
+    font-size: 0.5rem;
+  }
+
+  .btn-buy {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--moon);
+    background: transparent;
+    border: 1px solid rgba(244,232,193,0.4);
+    padding: 1.2rem 4rem;
+    text-decoration: none;
+    transition: all 0.4s;
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-buy::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--blood);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .btn-buy:hover::before { transform: scaleY(1); }
+  .btn-buy span { position: relative; z-index: 1; }
+  .btn-buy:hover { border-color: var(--blood); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--shadow);
+    border-top: 1px solid rgba(139,0,0,0.2);
+    padding: 3rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 0.9rem;
+    color: var(--blood-light);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-copy {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: rgba(244,232,193,0.3);
+    text-align: center;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 1.5rem;
+    list-style: none;
+  }
+
+  .footer-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(244,232,193,0.4);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--blood-light); }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .container { padding: 0 2rem; }
+    nav { padding: 1rem 2rem; }
+    .nav-links { display: none; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    .regole-grid { grid-template-columns: 1fr; }
+    .rules-aside { position: static; }
+    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
+    .product-features { flex-wrap: wrap; gap: 1.5rem; }
+  }
+
+  @media (max-width: 580px) {
+    .cards-grid { grid-template-columns: 1fr 1fr; }
+    .hero-cta { flex-direction: column; align-items: center; }
+    .price-display { font-size: 3.5rem; }
+  }
+
+  /* ─── SCROLL ANIMATIONS ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ─── BLOOD DRIP DECORATION ─── */
+  .blood-accent {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 60px;
+    background: linear-gradient(180deg, var(--blood-light) 0%, transparent 100%);
+    opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <a href="#" class="nav-logo">Lupus in Tabula</a>
+  <ul class="nav-links">
+    <li><a href="#about">Il Gioco</a></li>
+    <li><a href="#ruoli">Ruoli</a></li>
+    <li><a href="#regole">Regole</a></li>
+    <li><a href="#acquista">Acquista</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="moon-circle"></div>
+
+  <!-- Forest trees SVG -->
+  <svg class="trees-svg" viewBox="0 0 1440 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+    <path d="M0,300 L0,200 L40,160 L80,200 L80,140 L130,80 L180,140 L180,180 L220,130 L260,180 L260,200 L300,150 L340,200 L340,180 L390,100 L440,180 L440,200 L480,160 L520,200 L540,170 L580,110 L620,170 L640,180 L680,140 L720,180 L760,150 L800,100 L840,150 L880,180 L920,130 L960,180 L1000,160 L1040,110 L1080,160 L1100,180 L1140,140 L1180,180 L1220,150 L1260,90 L1300,150 L1340,180 L1380,140 L1440,200 L1440,300 Z" fill="rgba(15,25,18,0.8)"/>
+    <path d="M0,300 L0,240 L60,200 L90,240 L120,210 L160,240 L200,220 L240,170 L280,220 L320,240 L360,210 L400,240 L440,230 L480,200 L520,240 L560,220 L600,190 L640,220 L680,240 L720,210 L760,240 L800,230 L840,200 L880,240 L920,220 L960,240 L1000,210 L1040,240 L1080,220 L1120,190 L1160,220 L1200,240 L1240,220 L1280,200 L1320,240 L1360,220 L1440,240 L1440,300 Z" fill="rgba(8,14,10,0.95)"/>
+  </svg>
+
+  <span class="hero-eyebrow">— Dedalo &amp; Zeus —</span>
+  <h1 class="hero-title">
+    Lupus
+    <span>in Tabula</span>
+  </h1>
+  <p class="hero-subtitle">Chi è il lupo? Chi mente? Chi sopravviverà alla notte?<br>Un gioco di inganno e deduzione per 8–18 giocatori.</p>
+
+  <div class="hero-cta">
+    <a href="#ruoli" class="btn-primary"><span>Scopri i Ruoli</span></a>
+    <a href="#regole" class="btn-secondary">Come si Gioca</a>
+  </div>
+
+  <div class="scroll-hint">
+    <span>Scorri</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <span class="section-label">Il Villaggio è in pericolo</span>
+        <h2 class="section-title">Un Inganno<br>in Ogni Sorriso</h2>
+        <p>Lupus in Tabula è un <em>gioco di ruolo sociale</em> in cui il villaggio deve scoprire ed eliminare i lupi mannari nascosti tra loro, prima che siano questi ultimi a divorare tutti i villagers.</p>
+        <p>Ogni notte i lupi colpiscono. Ogni giorno il villaggio si riunisce e, tra accuse, alleanze e tradimenti, deve votare l'eliminazione di un sospettato. La tensione cresce, la fiducia si sgretola.</p>
+        <p><em>Chi osservi, chi senti, chi credi — potrebbe non essere quello che sembra.</em></p>
+      </div>
+
+      <div class="parchment-card reveal reveal-delay-2">
+        <div class="parchment-title">✦ Cronache del Villaggio ✦</div>
+        <p class="parchment-body">
+          "Era notte fonda quando il primo urlo squarciò il silenzio. All'alba trovammo il mugnaio — o ciò che ne restava. Il Sindaco convocò l'assemblea. Tutti si accusavano. Tutti mentivano. Forse anche io..."
+        </p>
+        <div class="parchment-signature">— Diario di un sopravvissuto —</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RUOLI -->
+<section id="ruoli">
+  <div class="container">
+    <div class="ruoli-header reveal">
+      <span class="section-label">Chi sei stanotte?</span>
+      <h2 class="section-title">I Ruoli</h2>
+      <p style="color: var(--moon-dark); max-width: 500px; margin: 0 auto; font-style: italic; opacity: 0.8;">Passa il mouse su ogni carta per scoprire il potere nascosto di ciascun personaggio.</p>
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- Villager -->
+      <div class="role-card card-villagers reveal">
+        <div class="role-card-bg"></div>
+        <div class="role-card-symbol">🌾</div>
+        <div class="role-border"></div>
+        <div class="role-card-content">
+          <div class="role-name">Villager</div>
+          <div class="role-team">Villaggio</div>
+          <div class="role-desc">La forza sta nel numero. I villagers non hanno poteri speciali ma insieme possono smascherare il male attraverso il dibattito e il voto.</div>
+        </div>
+      </div>
+
+      <!-- Lupo Mannaro -->
+      <div class="role-card card-lupo reveal reveal-delay-1">
+        <div class="role-card-bg"></div>
+        <div class="role-card-symbol">🐺</div>
+        <div class="role-border"></div>
+        <div class="role-card-content">
+          <div class="role-name">Lupo Mannaro</div>
+          <div class="role-team">Branco</div>
+          <div class="role-desc">Di notte si risveglia e con i suoi simili sceglie la vittima. Di giorno si finge innocente tra i villagers, seminando dubbi e accuse.</div>
+        </div>
+      </div>
+
+      <!-- Veggente -->
+      <div class="role-card card-veggente reveal reveal-delay-2">
+        <div class="role-card-bg"></div>
+        <div class="role-card-symbol">🔮</div>
+        <div class="role-border"></div>
+        <div class="role-card-content">
+          <div class="role-name">Veggente</div>
+          <div class="role-team">Villaggio</div>
+          <div class="role-desc">Ogni notte può scrutare l'anima di un giocatore e scoprire se è un lupo o un innocente. Una conoscenza preziosa — e pericolosa.</div>
+        </div>
+      </div>
+
+      <!-- Strega -->
+      <div class="role-card card-strega reveal reveal-delay-1">
+        <div class="role-card-bg"></div>
+        <div class="role-card-symbol">🧪</div>
+        <div class="role-border"></div>
+        <div class="role-card-content">
+          <div class="role-name">Strega</div>
+          <div class="role-team">Villaggio</div>
+          <div class="role-desc">Possiede due potenti filtri: uno della vita per salvare una vittima dei lupi, uno della morte per eliminare chiunque. Ognuno si usa una sola volta.</div>
+        </div>
+      </div>
+
+      <!-- Cacciatore -->
+      <div class="role-card card-cacciatore reveal reveal-delay-2">
+        <div class="role-card-bg"></div>
+        <div class="role-card-symbol">🏹</div>
+        <div class="role-border"></div>
+        <div class="role-card-content">
+          <div class="role-name">Cacciatore</div>
+          <div class="role-team">Villaggio</div>
+          <div class="role-desc">Quando viene eliminato, può scagliare un ultimo colpo mortale contro chiunque sciegli. Anche nella morte può fare la differenza.</div>
+        </div>
+      </div>
+
+      <!-- Cupido -->
+      <div class="role-card card-cupido reveal reveal-delay-3">
+        <div class="role-card-bg"></div>
+        <div class="role-card-symbol">💘</div>
+        <div class="role-border"></div>
+        <div class="role-card-content">
+          <div class="role-name">Cupido</div>
+          <div class="role-team">Villaggio</div>
+          <div class="role-desc">La prima notte sceglie due innamorati. Se uno muore, l'altro lo segue nel destino. Un amore che può salvare — o distruggere — il villaggio.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- REGOLE -->
+<section id="regole">
+  <div class="container">
+    <div class="regole-grid">
+      <div>
+        <div class="reveal">
+          <span class="section-label">Il Rituale Notturno</span>
+          <h2 class="section-title">Come si Gioca</h2>
+        </div>
+
+        <ol class="phase-list">
+          <li class="phase-item reveal">
+            <span class="phase-number">I</span>
+            <div>
+              <div class="phase-title">Distribuzione delle Carte</div>
+              <p class="phase-desc">Il moderatore distribuisce segretamente una carta ruolo a ogni giocatore. Ognuno conosce solo la propria identità.</p>
+            </div>
+          </li>
+          <li class="phase-item reveal reveal-delay-1">
+            <span class="phase-number">II</span>
+            <div>
+              <div class="phase-title">La Notte Cala</div>
+              <p class="phase-desc">Tutti chiudono gli occhi. Il moderatore risveglia i Lupi, la Veggente, la Strega uno per volta — ognuno compie la propria azione in silenzio.</p>
+            </div>
+          </li>
+          <li class="phase-item reveal reveal-delay-2">
+            <span class="phase-number">III</span>
+            <div>
+              <div class="phase-title">L'Alba e la Rivelazione</div>
+              <p class="phase-desc">Il moderatore annuncia la vittima della notte. Il villaggio si sveglia, scopre chi è stato eliminato, e inizia il dibattito.</p>
+            </div>
+          </li>
+          <li class="phase-item reveal reveal-delay-3">
+            <span class="phase-number">IV</span>
+            <div>
+              <div class="phase-title">L'Accusa e il Voto</div>
+              <p class="phase-desc">I villagers discutono, accusano, si difendono. Al termine si vota: chi raccoglie più voti viene eliminato dal gioco — lupo o innocente.</p>
+            </div>
+          </li>
+          <li class="phase-item reveal reveal-delay-4">
+            <span class="phase-number">V</span>
+            <div>
+              <div class="phase-title">La Fine della Partita</div>
+              <p class="phase-desc">I villagers vincono eliminando tutti i lupi. I lupi vincono quando sono in parità numerica con i villagers rimasti.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="rules-aside">
+        <div class="rules-blockquote reveal">
+          <p>"Il segreto del gioco non è sapere chi uccidere, ma convincere gli altri a credere in te."</p>
+          <cite>— Bruno Faidutti, game designer —</cite>
+        </div>
+
+        <div class="stat-grid reveal reveal-delay-1">
+          <div class="stat-item">
+            <span class="stat-number">8–18</span>
+            <span class="stat-label">Giocatori</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">30'</span>
+            <span class="stat-label">Durata Media</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">10+</span>
+            <span class="stat-label">Anni</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">44</span>
+            <span class="stat-label">Carte Incluse</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACQUISTA -->
+<section id="acquista">
+  <div class="acquista-inner container">
+    <div class="blood-accent"></div>
+    <span class="section-label reveal">Porta il Terrore a Casa Tua</span>
+    <h2 class="section-title reveal">Il Villaggio Ti Aspetta</h2>
+    <div class="price-display reveal">€14</div>
+    <p class="price-note reveal">Edizione Standard · 44 carte + regolamento</p>
+
+    <ul class="product-features reveal">
+      <li>44 Carte Illustrate</li>
+      <li>Regolamento Bilingue</li>
+      <li>Varianti Avanzate</li>
+      <li>Espansioni Compatibili</li>
+    </ul>
+
+    <a href="#" class="btn-buy reveal reveal-delay-1"><span>Acquista Ora</span></a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Lupus in Tabula</div>
+  <p class="footer-copy">© 2024 Dedalo &amp; Zeus · Tutti i diritti riservati</p>
+  <ul class="footer-links">
+    <li><a href="#">Privacy</a></li>
+    <li><a href="#">Contatti</a></li>
+    <li><a href="#">Press</a></li>
+  </ul>
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Parallax moon
+  window.addEventListener('scroll', () => {
+    const moon = document.querySelector('.moon-circle');
+    if (moon) {
+      const y = window.scrollY * 0.3;
+      moon.style.transform = `translateY(${y}px)`;
+    }
+  }, { passive: true });
+</script>
+</body>
+</html>
