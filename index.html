@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lupus in Tabula — Il Gioco dei Sospetti</title>
+<title>Lupus in Tabula — Online Multiplayer</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -21,7 +21,7 @@
     --forest: #1B3A2D;
     --silver: #C0C0C0;
     --gold: #C9A84C;
-    --gold-light: #E8C86A;
+    --hamster: #D4A373;
   }
 
   html { scroll-behavior: smooth; }
@@ -46,7 +46,6 @@
     opacity: 0.4;
   }
 
-  /* ─── CURSOR ─── */
   body { cursor: crosshair; }
   a, button { cursor: crosshair; }
 
@@ -301,35 +300,8 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ─── DIVIDER ─── */
-  .ornamental-divider {
-    text-align: center;
-    margin: 4rem 0;
-    color: var(--blood);
-    font-size: 1.5rem;
-    letter-spacing: 1rem;
-    opacity: 0.6;
-    position: relative;
-  }
-
-  .ornamental-divider::before,
-  .ornamental-divider::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: 30%;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(139,0,0,0.4), transparent);
-  }
-
-  .ornamental-divider::before { left: 5%; }
-  .ornamental-divider::after { right: 5%; }
-
   /* ─── SECTIONS ─── */
-  section {
-    position: relative;
-    z-index: 1;
-  }
+  section { position: relative; z-index: 1; }
 
   .container {
     max-width: 1200px;
@@ -374,10 +346,7 @@
     font-size: 1.05rem;
   }
 
-  .about-text p em {
-    color: var(--moon);
-    font-style: italic;
-  }
+  .about-text p em { color: var(--moon); font-style: italic; }
 
   .parchment-card {
     background: var(--parchment);
@@ -434,10 +403,7 @@
     background: var(--shadow);
   }
 
-  .ruoli-header {
-    text-align: center;
-    margin-bottom: 5rem;
-  }
+  .ruoli-header { text-align: center; margin-bottom: 5rem; }
 
   .cards-grid {
     display: grid;
@@ -460,29 +426,12 @@
 
   .role-card:hover .role-card-bg { transform: scale(1.08); }
 
-  .card-villagers .role-card-bg {
-    background: linear-gradient(160deg, #1a3a1a 0%, #0d2010 40%, #050e07 100%);
-  }
-
-  .card-lupo .role-card-bg {
-    background: linear-gradient(160deg, #3a0a0a 0%, #1a0505 40%, #0a0202 100%);
-  }
-
-  .card-veggente .role-card-bg {
-    background: linear-gradient(160deg, #1a1a3a 0%, #0d0d20 40%, #050508 100%);
-  }
-
-  .card-strega .role-card-bg {
-    background: linear-gradient(160deg, #2a1a3a 0%, #180d22 40%, #0a0510 100%);
-  }
-
-  .card-cacciatore .role-card-bg {
-    background: linear-gradient(160deg, #2a1a0a 0%, #1a0d05 40%, #0e0702 100%);
-  }
-
-  .card-cupido .role-card-bg {
-    background: linear-gradient(160deg, #3a1a2a 0%, #1f0d17 40%, #0e060c 100%);
-  }
+  .card-villagers .role-card-bg { background: linear-gradient(160deg, #1a3a1a 0%, #0d2010 40%, #050e07 100%); }
+  .card-lupo .role-card-bg { background: linear-gradient(160deg, #3a0a0a 0%, #1a0505 40%, #0a0202 100%); }
+  .card-veggente .role-card-bg { background: linear-gradient(160deg, #1a1a3a 0%, #0d0d20 40%, #050508 100%); }
+  .card-medium .role-card-bg { background: linear-gradient(160deg, #2a1a3a 0%, #180d22 40%, #0a0510 100%); }
+  .card-guardia .role-card-bg { background: linear-gradient(160deg, #2a2a2a 0%, #151515 40%, #050505 100%); }
+  .card-criceto .role-card-bg { background: linear-gradient(160deg, #3a2a1a 0%, #20150d 40%, #0d0805 100%); }
 
   .role-card-symbol {
     position: absolute;
@@ -530,12 +479,12 @@
   }
 
   .card-villagers .role-team,
-  .card-cacciatore .role-team,
   .card-veggente .role-team,
-  .card-strega .role-team,
-  .card-cupido .role-team { color: #6ab04c; }
+  .card-medium .role-team,
+  .card-guardia .role-team { color: #6ab04c; }
 
   .card-lupo .role-team { color: var(--blood-light); }
+  .card-criceto .role-team { color: var(--hamster); }
 
   .role-desc {
     font-family: 'EB Garamond', serif;
@@ -547,10 +496,7 @@
     transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
   }
 
-  .role-card:hover .role-desc {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .role-card:hover .role-desc { opacity: 1; transform: translateY(0); }
 
   .role-border {
     position: absolute;
@@ -562,10 +508,10 @@
 
   .card-lupo:hover .role-border { border-color: rgba(196,30,58,0.4); }
   .card-veggente:hover .role-border { border-color: rgba(80,80,200,0.3); }
-  .card-strega:hover .role-border { border-color: rgba(120,50,180,0.3); }
-  .card-cacciatore:hover .role-border { border-color: rgba(180,120,30,0.3); }
+  .card-medium:hover .role-border { border-color: rgba(120,50,180,0.3); }
+  .card-guardia:hover .role-border { border-color: rgba(180,180,180,0.3); }
   .card-villagers:hover .role-border { border-color: rgba(80,160,60,0.3); }
-  .card-cupido:hover .role-border { border-color: rgba(196,60,100,0.3); }
+  .card-criceto:hover .role-border { border-color: rgba(212,163,115,0.3); }
 
   /* ─── COME SI GIOCA ─── */
   #regole {
@@ -580,10 +526,7 @@
     align-items: start;
   }
 
-  .phase-list {
-    list-style: none;
-    counter-reset: phase-counter;
-  }
+  .phase-list { list-style: none; counter-reset: phase-counter; }
 
   .phase-item {
     counter-increment: phase-counter;
@@ -620,10 +563,7 @@
     opacity: 0.8;
   }
 
-  .rules-aside {
-    position: sticky;
-    top: 6rem;
-  }
+  .rules-aside { position: sticky; top: 6rem; }
 
   .rules-blockquote {
     border-left: 3px solid var(--blood);
@@ -676,8 +616,8 @@
     display: block;
   }
 
-  /* ─── ACQUISTA ─── */
-  #acquista {
+  /* ─── GIOCA ONLINE ─── */
+  #gioca {
     padding: 10rem 0;
     text-align: center;
     background: var(--forest);
@@ -685,32 +625,23 @@
     overflow: hidden;
   }
 
-  #acquista::before {
+  #gioca::before {
     content: '';
     position: absolute;
     inset: 0;
     background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(139,0,0,0.15) 0%, transparent 70%);
   }
 
-  .acquista-inner {
-    position: relative;
-    z-index: 1;
-  }
-
-  .price-display {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 5rem;
-    color: var(--moon);
-    margin: 2rem 0 0.5rem;
-    line-height: 1;
-  }
+  .gioca-inner { position: relative; z-index: 1; }
 
   .price-note {
     font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
+    font-size: 0.9rem;
     color: var(--moon-dark);
-    opacity: 0.6;
+    opacity: 0.8;
+    max-width: 600px;
+    margin: 1.5rem auto 3rem;
+    line-height: 1.8;
   }
 
   .product-features {
@@ -828,7 +759,6 @@
   @media (max-width: 580px) {
     .cards-grid { grid-template-columns: 1fr 1fr; }
     .hero-cta { flex-direction: column; align-items: center; }
-    .price-display { font-size: 3.5rem; }
   }
 
   /* ─── SCROLL ANIMATIONS ─── */
@@ -838,10 +768,7 @@
     transition: opacity 0.8s ease, transform 0.8s ease;
   }
 
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
   .reveal-delay-1 { transition-delay: 0.1s; }
   .reveal-delay-2 { transition-delay: 0.2s; }
@@ -870,7 +797,7 @@
     <li><a href="#about">Il Gioco</a></li>
     <li><a href="#ruoli">Ruoli</a></li>
     <li><a href="#regole">Regole</a></li>
-    <li><a href="#acquista">Acquista</a></li>
+    <li><a href="#gioca">Gioca Online</a></li>
   </ul>
 </nav>
 
@@ -885,15 +812,15 @@
     <path d="M0,300 L0,240 L60,200 L90,240 L120,210 L160,240 L200,220 L240,170 L280,220 L320,240 L360,210 L400,240 L440,230 L480,200 L520,240 L560,220 L600,190 L640,220 L680,240 L720,210 L760,240 L800,230 L840,200 L880,240 L920,220 L960,240 L1000,210 L1040,240 L1080,220 L1120,190 L1160,220 L1200,240 L1240,220 L1280,200 L1320,240 L1360,220 L1440,240 L1440,300 Z" fill="rgba(8,14,10,0.95)"/>
   </svg>
 
-  <span class="hero-eyebrow">— Dedalo &amp; Zeus —</span>
+  <span class="hero-eyebrow">— Gioca Online con i tuoi amici —</span>
   <h1 class="hero-title">
     Lupus
     <span>in Tabula</span>
   </h1>
-  <p class="hero-subtitle">Chi è il lupo? Chi mente? Chi sopravviverà alla notte?<br>Un gioco di inganno e deduzione per 8–18 giocatori.</p>
+  <p class="hero-subtitle">Chi è il lupo? Chi mente? Chi sopravviverà alla notte?<br>Il celebre gioco di deduzione e inganno, ora direttamente nel tuo browser per 8–24 giocatori.</p>
 
   <div class="hero-cta">
-    <a href="#ruoli" class="btn-primary"><span>Scopri i Ruoli</span></a>
+    <a href="#gioca" class="btn-primary"><span>Crea una Stanza</span></a>
     <a href="#regole" class="btn-secondary">Come si Gioca</a>
   </div>
 
@@ -910,17 +837,17 @@
       <div class="about-text reveal">
         <span class="section-label">Il Villaggio è in pericolo</span>
         <h2 class="section-title">Un Inganno<br>in Ogni Sorriso</h2>
-        <p>Lupus in Tabula è un <em>gioco di ruolo sociale</em> in cui il villaggio deve scoprire ed eliminare i lupi mannari nascosti tra loro, prima che siano questi ultimi a divorare tutti i villagers.</p>
-        <p>Ogni notte i lupi colpiscono. Ogni giorno il villaggio si riunisce e, tra accuse, alleanze e tradimenti, deve votare l'eliminazione di un sospettato. La tensione cresce, la fiducia si sgretola.</p>
-        <p><em>Chi osservi, chi senti, chi credi — potrebbe non essere quello che sembra.</em></p>
+        <p>Lupus in Tabula è un <em>party game sociale</em> in cui i contadini devono smascherare e linciare i Lupi Mannari nascosti tra loro prima di essere sbranati tutti.</p>
+        <p>Il sistema online gestisce automaticamente la notte, chiamando i ruoli nell'ordine corretto. Di giorno si attiva la chat vocale per discutere: le alleanze si formano, i sospetti divampano e le menzogne diventano scudi.</p>
+        <p><em>Ma attenzione... nel caos tra Contadini e Lupi, il solitario Criceto Mannaro trama nell'ombra.</em></p>
       </div>
 
       <div class="parchment-card reveal reveal-delay-2">
         <div class="parchment-title">✦ Cronache del Villaggio ✦</div>
         <p class="parchment-body">
-          "Era notte fonda quando il primo urlo squarciò il silenzio. All'alba trovammo il mugnaio — o ciò che ne restava. Il Sindaco convocò l'assemblea. Tutti si accusavano. Tutti mentivano. Forse anche io..."
+          "Credevamo di aver trovato il colpevole, ma all'alba il villaggio contava un'altra vittima innocente. Il Veggente parla per enigmi, e quel tizio non fa che sorridere... potrebbe essere lui il Criceto?"
         </p>
-        <div class="parchment-signature">— Diario di un sopravvissuto —</div>
+        <div class="parchment-signature">— Diario del Master —</div>
       </div>
     </div>
   </div>
@@ -931,21 +858,21 @@
   <div class="container">
     <div class="ruoli-header reveal">
       <span class="section-label">Chi sei stanotte?</span>
-      <h2 class="section-title">I Ruoli</h2>
+      <h2 class="section-title">I Ruoli Principali</h2>
       <p style="color: var(--moon-dark); max-width: 500px; margin: 0 auto; font-style: italic; opacity: 0.8;">Passa il mouse su ogni carta per scoprire il potere nascosto di ciascun personaggio.</p>
     </div>
 
     <div class="cards-grid">
 
-      <!-- Villager -->
+      <!-- Contadino -->
       <div class="role-card card-villagers reveal">
         <div class="role-card-bg"></div>
         <div class="role-card-symbol">🌾</div>
         <div class="role-border"></div>
         <div class="role-card-content">
-          <div class="role-name">Villager</div>
+          <div class="role-name">Contadino</div>
           <div class="role-team">Villaggio</div>
-          <div class="role-desc">La forza sta nel numero. I villagers non hanno poteri speciali ma insieme possono smascherare il male attraverso il dibattito e il voto.</div>
+          <div class="role-desc">Non ha poteri speciali durante la notte. Di giorno usa la logica, l'intuito e il voto per smascherare i lupi e salvare il villaggio.</div>
         </div>
       </div>
 
@@ -957,7 +884,7 @@
         <div class="role-card-content">
           <div class="role-name">Lupo Mannaro</div>
           <div class="role-team">Branco</div>
-          <div class="role-desc">Di notte si risveglia e con i suoi simili sceglie la vittima. Di giorno si finge innocente tra i villagers, seminando dubbi e accuse.</div>
+          <div class="role-desc">Di notte si accorda in segreto con gli altri lupi per sbranare un innocente. Di giorno si finge un normale contadino.</div>
         </div>
       </div>
 
@@ -969,43 +896,43 @@
         <div class="role-card-content">
           <div class="role-name">Veggente</div>
           <div class="role-team">Villaggio</div>
-          <div class="role-desc">Ogni notte può scrutare l'anima di un giocatore e scoprire se è un lupo o un innocente. Una conoscenza preziosa — e pericolosa.</div>
+          <div class="role-desc">Ogni notte sceglie un giocatore e il server gli rivela se è un Lupo o no. Se indaga sul Criceto Mannaro, quest'ultimo muore di spavento!</div>
         </div>
       </div>
 
-      <!-- Strega -->
-      <div class="role-card card-strega reveal reveal-delay-1">
+      <!-- Medium -->
+      <div class="role-card card-medium reveal reveal-delay-1">
         <div class="role-card-bg"></div>
-        <div class="role-card-symbol">🧪</div>
+        <div class="role-card-symbol">👻</div>
         <div class="role-border"></div>
         <div class="role-card-content">
-          <div class="role-name">Strega</div>
+          <div class="role-name">Medium</div>
           <div class="role-team">Villaggio</div>
-          <div class="role-desc">Possiede due potenti filtri: uno della vita per salvare una vittima dei lupi, uno della morte per eliminare chiunque. Ognuno si usa una sola volta.</div>
+          <div class="role-desc">Viene chiamato durante la notte e scopre dal moderatore se il giocatore linciato la mattina precedente dalla folla era un Lupo Mannaro oppure no.</div>
         </div>
       </div>
 
-      <!-- Cacciatore -->
-      <div class="role-card card-cacciatore reveal reveal-delay-2">
+      <!-- Guardia del Corpo -->
+      <div class="role-card card-guardia reveal reveal-delay-2">
         <div class="role-card-bg"></div>
-        <div class="role-card-symbol">🏹</div>
+        <div class="role-card-symbol">🛡️</div>
         <div class="role-border"></div>
         <div class="role-card-content">
-          <div class="role-name">Cacciatore</div>
+          <div class="role-name">Guardia del Corpo</div>
           <div class="role-team">Villaggio</div>
-          <div class="role-desc">Quando viene eliminato, può scagliare un ultimo colpo mortale contro chiunque sciegli. Anche nella morte può fare la differenza.</div>
+          <div class="role-desc">Ogni notte protegge un giocatore. Se i Lupi provano a sbranare il protetto, questo sopravvive. Non può proteggere lo stesso giocatore due notti di fila.</div>
         </div>
       </div>
 
-      <!-- Cupido -->
-      <div class="role-card card-cupido reveal reveal-delay-3">
+      <!-- Criceto Mannaro -->
+      <div class="role-card card-criceto reveal reveal-delay-3">
         <div class="role-card-bg"></div>
-        <div class="role-card-symbol">💘</div>
+        <div class="role-card-symbol">🐹</div>
         <div class="role-border"></div>
         <div class="role-card-content">
-          <div class="role-name">Cupido</div>
-          <div class="role-team">Villaggio</div>
-          <div class="role-desc">La prima notte sceglie due innamorati. Se uno muore, l'altro lo segue nel destino. Un amore che può salvare — o distruggere — il villaggio.</div>
+          <div class="role-name">Criceto Mannaro</div>
+          <div class="role-team">Solitario</div>
+          <div class="role-desc">Fa squadra da solo! I Lupi non possono sbranarlo (se lo scelgono, nessuno muore). Muore istantaneamente se il Veggente prova a scrutarlo. Vince da solo se è ancora vivo a fine partita.</div>
         </div>
       </div>
 
@@ -1019,44 +946,44 @@
     <div class="regole-grid">
       <div>
         <div class="reveal">
-          <span class="section-label">Il Rituale Notturno</span>
-          <h2 class="section-title">Come si Gioca</h2>
+          <span class="section-label">Fasi di Gioco</span>
+          <h2 class="section-title">Come Funziona</h2>
         </div>
 
         <ol class="phase-list">
           <li class="phase-item reveal">
             <span class="phase-number">I</span>
             <div>
-              <div class="phase-title">Distribuzione delle Carte</div>
-              <p class="phase-desc">Il moderatore distribuisce segretamente una carta ruolo a ogni giocatore. Ognuno conosce solo la propria identità.</p>
+              <div class="phase-title">Assegnazione Ruoli e Lobby</div>
+              <p class="phase-desc">L'host crea la partita e invita gli amici tramite link. Il server distribuisce casualmente e segretamente un ruolo a ciascun giocatore.</p>
             </div>
           </li>
           <li class="phase-item reveal reveal-delay-1">
             <span class="phase-number">II</span>
             <div>
-              <div class="phase-title">La Notte Cala</div>
-              <p class="phase-desc">Tutti chiudono gli occhi. Il moderatore risveglia i Lupi, la Veggente, la Strega uno per volta — ognuno compie la propria azione in silenzio.</p>
+              <div class="phase-title">La Notte</div>
+              <p class="phase-desc">Gli schermi si oscurano. Il sistema chiama in ordine: Guardia (sceglie chi proteggere), Veggente (indaga), Lupi (votano chi sbranare) e Medium (scopre il ruolo del morto del giorno prima). Il Criceto Mannaro sorride al buio e spera di non essere spiato dal Veggente.</p>
             </div>
           </li>
           <li class="phase-item reveal reveal-delay-2">
             <span class="phase-number">III</span>
             <div>
-              <div class="phase-title">L'Alba e la Rivelazione</div>
-              <p class="phase-desc">Il moderatore annuncia la vittima della notte. Il villaggio si sveglia, scopre chi è stato eliminato, e inizia il dibattito.</p>
+              <div class="phase-title">Il Giorno</div>
+              <p class="phase-desc">Arriva l'alba. Il server annuncia chi è stato sbranato o morto di spavento. Si apre la chat vocale: tutti discutono e analizzano i sospetti per trovare i colpevoli.</p>
             </div>
           </li>
           <li class="phase-item reveal reveal-delay-3">
             <span class="phase-number">IV</span>
             <div>
-              <div class="phase-title">L'Accusa e il Voto</div>
-              <p class="phase-desc">I villagers discutono, accusano, si difendono. Al termine si vota: chi raccoglie più voti viene eliminato dal gioco — lupo o innocente.</p>
+              <div class="phase-title">Il Voto e il Rogo</div>
+              <p class="phase-desc">Al termine del timer si vota chi mandare al rogo. Il giocatore più votato viene eliminato dalla partita, senza rivelare il proprio ruolo (a meno che non ci sia il Medium la notte successiva!).</p>
             </div>
           </li>
           <li class="phase-item reveal reveal-delay-4">
             <span class="phase-number">V</span>
             <div>
-              <div class="phase-title">La Fine della Partita</div>
-              <p class="phase-desc">I villagers vincono eliminando tutti i lupi. I lupi vincono quando sono in parità numerica con i villagers rimasti.</p>
+              <div class="phase-title">Condizioni di Vittoria</div>
+              <p class="phase-desc"><strong>Villaggio:</strong> Vince se elimina tutti i Lupi.<br><strong>Lupi:</strong> Vincono se pareggiano il numero dei Contadini in vita.<br><strong>Criceto Mannaro:</strong> Ruba la vittoria e vince da solo se è ancora in vita quando si verifica una delle due condizioni precedenti!</p>
             </div>
           </li>
         </ol>
@@ -1064,26 +991,26 @@
 
       <div class="rules-aside">
         <div class="rules-blockquote reveal">
-          <p>"Il segreto del gioco non è sapere chi uccidere, ma convincere gli altri a credere in te."</p>
-          <cite>— Bruno Faidutti, game designer —</cite>
+          <p>"Un buon Veggente salva il villaggio. Un finto Veggente domina il gioco."</p>
+          <cite>— La regola d'oro dei Lupi —</cite>
         </div>
 
         <div class="stat-grid reveal reveal-delay-1">
           <div class="stat-item">
-            <span class="stat-number">8–18</span>
+            <span class="stat-number">8–24</span>
             <span class="stat-label">Giocatori</span>
           </div>
           <div class="stat-item">
-            <span class="stat-number">30'</span>
-            <span class="stat-label">Durata Media</span>
+            <span class="stat-number">25'</span>
+            <span class="stat-label">Minuti a Partita</span>
           </div>
           <div class="stat-item">
-            <span class="stat-number">10+</span>
-            <span class="stat-label">Anni</span>
+            <span class="stat-number">Web</span>
+            <span class="stat-label">Piattaforma (No App)</span>
           </div>
           <div class="stat-item">
-            <span class="stat-number">44</span>
-            <span class="stat-label">Carte Incluse</span>
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Gratuito</span>
           </div>
         </div>
       </div>
@@ -1091,34 +1018,38 @@
   </div>
 </section>
 
-<!-- ACQUISTA -->
-<section id="acquista">
-  <div class="acquista-inner container">
+<!-- GIOCA ONLINE -->
+<section id="gioca">
+  <div class="gioca-inner container">
     <div class="blood-accent"></div>
-    <span class="section-label reveal">Porta il Terrore a Casa Tua</span>
-    <h2 class="section-title reveal">Il Villaggio Ti Aspetta</h2>
-    <div class="price-display reveal">€14</div>
-    <p class="price-note reveal">Edizione Standard · 44 carte + regolamento</p>
+    <span class="section-label reveal">La luna piena è sorta</span>
+    <h2 class="section-title reveal">Gioca Ora con i Tuoi Amici</h2>
+    <p class="price-note reveal">
+      Crea subito una lobby privata per te e il tuo gruppo. Non c'è bisogno di installare nulla: condividi il link di invito e fate partire il massacro direttamente da PC o Smartphone.
+    </p>
 
     <ul class="product-features reveal">
-      <li>44 Carte Illustrate</li>
-      <li>Regolamento Bilingue</li>
-      <li>Varianti Avanzate</li>
-      <li>Espansioni Compatibili</li>
+      <li>Chat Vocale e Testuale</li>
+      <li>Moderazione del Gioco Automatica</li>
+      <li>Set di Ruoli Personalizzabile</li>
+      <li>Cronologia degli Eventi e Voti Segreti</li>
     </ul>
 
-    <a href="#" class="btn-buy reveal reveal-delay-1"><span>Acquista Ora</span></a>
+    <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 3rem;">
+      <a href="#" class="btn-buy reveal reveal-delay-1"><span>Crea Stanza</span></a>
+      <a href="#" class="btn-secondary reveal reveal-delay-2">Unisciti a Partita</a>
+    </div>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Lupus in Tabula</div>
-  <p class="footer-copy">© 2024 Dedalo &amp; Zeus · Tutti i diritti riservati</p>
+  <div class="footer-logo">Lupus in Tabula Online</div>
+  <p class="footer-copy">© 2026 Dedalo &amp; Zeus · Non affiliato a dV Giochi</p>
   <ul class="footer-links">
     <li><a href="#">Privacy</a></li>
-    <li><a href="#">Contatti</a></li>
-    <li><a href="#">Press</a></li>
+    <li><a href="#">Supporto</a></li>
+    <li><a href="#">Termini</a></li>
   </ul>
 </footer>
 
