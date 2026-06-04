@@ -22,6 +22,8 @@
     --silver: #C0C0C0;
     --gold: #C9A84C;
     --hamster: #D4A373;
+    --panel: #15110c;
+    --panel-line: rgba(244,232,193,0.12);
   }
 
   html { scroll-behavior: smooth; }
@@ -31,11 +33,11 @@
     color: var(--moon);
     font-family: 'EB Garamond', Georgia, serif;
     font-size: 18px;
-    line-height: 1.8;
+    line-height: 1.7;
     overflow-x: hidden;
+    min-height: 100vh;
   }
 
-  /* ─── NOISE OVERLAY ─── */
   body::before {
     content: '';
     position: fixed;
@@ -46,1032 +48,1713 @@
     opacity: 0.4;
   }
 
-  body { cursor: crosshair; }
+  /* atmospheric background */
+  .app-bg {
+    position: fixed; inset: 0; z-index: -1;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 0%, rgba(139,0,0,0.10) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 85% 15%, rgba(244,232,193,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse 60% 50% at 15% 90%, rgba(27,58,45,0.12) 0%, transparent 55%),
+      var(--shadow);
+  }
+
+  h1,h2,h3 { font-family: 'Cinzel', serif; font-weight: 600; }
+
+  .display { font-family: 'Cinzel Decorative', serif; }
+
+  .wrap { max-width: 980px; margin: 0 auto; padding: 2rem 1.5rem 5rem; position: relative; z-index: 1; }
+
+  .screen { display: none; animation: fadeUp .6s ease both; }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp { from { opacity:0; transform: translateY(24px);} to {opacity:1; transform:none;} }
+
+  /* ─── HOME ─── */
+  .home-hero { text-align: center; padding: 4rem 0 2rem; position: relative; }
+  .home-moon {
+    width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 1.5rem;
+    background: radial-gradient(circle at 35% 35%, #fff8e1 0%, var(--moon) 40%, var(--moon-dark) 80%, #8a7a50 100%);
+    box-shadow: 0 0 50px rgba(244,232,193,0.2), 0 0 100px rgba(244,232,193,0.08);
+    animation: moonPulse 6s ease-in-out infinite;
+  }
+  @keyframes moonPulse { 0%,100%{box-shadow:0 0 50px rgba(244,232,193,0.2),0 0 100px rgba(244,232,193,0.08);} 50%{box-shadow:0 0 70px rgba(244,232,193,0.3),0 0 140px rgba(244,232,193,0.12);} }
+  .eyebrow { font-family:'Cinzel',serif; font-size:.68rem; letter-spacing:.4em; text-transform:uppercase; color:var(--blood-light); }
+  .home-hero h1 { font-family:'Cinzel Decorative',serif; font-size: clamp(2.6rem,8vw,5rem); line-height:1; margin:.6rem 0; text-shadow:0 0 60px rgba(139,0,0,.4);}
+  .home-hero h1 .sub { display:block; color:var(--blood-light); font-size:.5em; margin-top:.2em; }
+  .home-hero p.tagline { font-style: italic; color: var(--moon-dark); max-width: 520px; margin: 1rem auto 0; }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    padding: 2rem;
+    margin: 1.2rem 0;
+    position: relative;
+  }
+  .panel::after { content:''; position:absolute; top:0; left:0; width:100%; height:3px; background: var(--blood); opacity:.6; }
+  .panel.green::after { background: #2e7d32; }
+  .panel-title { font-family:'Cinzel',serif; font-size:.7rem; letter-spacing:.3em; text-transform:uppercase; color:var(--blood-light); margin-bottom:1.2rem; }
+
+  label.field { display:block; margin-bottom:1rem; }
+  label.field span { display:block; font-family:'Cinzel',serif; font-size:.65rem; letter-spacing:.2em; text-transform:uppercase; color:var(--moon-dark); margin-bottom:.4rem; }
+
+  input[type=text], input[type=number] {
+    width:100%; background: rgba(0,0,0,.35); border:1px solid var(--panel-line);
+    color: var(--moon); font-family:'EB Garamond',serif; font-size:1.05rem; padding:.8rem 1rem;
+    outline:none; transition:border-color .25s; border-radius:2px;
+  }
+  input:focus { border-color: var(--blood-light); }
+  input.code-input { letter-spacing:.4em; text-transform:uppercase; font-family:'Cinzel',serif; text-align:center; font-size:1.4rem; }
+
+  .btn {
+    font-family:'Cinzel',serif; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
+    padding:.9rem 1.8rem; border:none; cursor:pointer; text-decoration:none; display:inline-flex;
+    align-items:center; justify-content:center; gap:.5rem; transition:all .25s; border-radius:2px;
+  }
+  .btn-primary { background: var(--blood-light); color: var(--shadow); }
+  .btn-primary:hover { background: var(--blood); color: var(--moon); }
+  .btn-ghost { background: transparent; color: var(--moon-dark); border:1px solid var(--panel-line); }
+  .btn-ghost:hover { border-color: var(--moon); color: var(--moon); }
+  .btn-danger { background: transparent; color: var(--blood-light); border:1px solid rgba(196,30,58,.4); }
+  .btn-danger:hover { background: var(--blood); color: var(--moon); border-color:var(--blood);}
+  .btn-gold { background: var(--gold); color: var(--shadow); }
+  .btn-gold:hover { background:#e0bd5a; }
+  .btn:disabled { opacity:.35; cursor:not-allowed; }
+  .btn-sm { padding:.45rem .9rem; font-size:.66rem; }
+  .btn-block { width:100%; }
+
+  .row { display:flex; gap:1rem; flex-wrap:wrap; }
+  .row > * { flex:1; min-width:160px; }
+
+  .hint { font-size:.85rem; color: var(--moon-dark); opacity:.75; font-style:italic; }
+
+  /* ════════════ LANDING PAGE (home screen) ════════════ */
+  #screen-home.screen { animation: none; }
+  #app-wrap { max-width: 980px; margin: 0 auto; padding: 2rem 1.5rem 5rem; position: relative; z-index: 1; }
+  body:not(.in-app) #app-wrap { display: none; }
+  body.in-app #screen-home { display: none; }
   a, button { cursor: crosshair; }
 
-  /* ─── NAV ─── */
   nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
     padding: 1.2rem 4rem;
     background: linear-gradient(180deg, rgba(13,13,13,0.98) 0%, rgba(13,13,13,0) 100%);
     border-bottom: 1px solid rgba(139,0,0,0.2);
   }
+  .nav-logo { font-family:'Cinzel Decorative',serif; font-size:1.1rem; color:var(--blood-light); text-decoration:none; letter-spacing:0.12em; text-transform:uppercase; }
+  .nav-links { display:flex; gap:2.5rem; list-style:none; }
+  .nav-links a { font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--moon-dark); text-decoration:none; transition:color 0.3s; position:relative; }
+  .nav-links a::after { content:''; position:absolute; bottom:-4px; left:0; width:0; height:1px; background:var(--blood-light); transition:width 0.3s; }
+  .nav-links a:hover { color:var(--moon); }
+  .nav-links a:hover::after { width:100%; }
 
-  .nav-logo {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 1.1rem;
-    color: var(--blood-light);
-    text-decoration: none;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--moon-dark);
-    text-decoration: none;
-    transition: color 0.3s;
-    position: relative;
-  }
-
-  .nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: var(--blood-light);
-    transition: width 0.3s;
-  }
-
-  .nav-links a:hover { color: var(--moon); }
-  .nav-links a:hover::after { width: 100%; }
-
-  /* ─── HERO ─── */
-  .hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    position: relative;
-    padding: 0 2rem;
-    overflow: hidden;
-  }
-
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background:
+  .hero { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; position:relative; padding:0 2rem; overflow:hidden; }
+  .hero-bg { position:absolute; inset:0; background:
       radial-gradient(ellipse 80% 60% at 50% 40%, rgba(139,0,0,0.12) 0%, transparent 60%),
       radial-gradient(ellipse 40% 40% at 30% 70%, rgba(27,58,45,0.15) 0%, transparent 50%),
       radial-gradient(ellipse 50% 50% at 70% 20%, rgba(74,0,0,0.1) 0%, transparent 50%),
-      var(--shadow);
-  }
+      var(--shadow); }
+  .moon-circle { position:absolute; top:8%; right:12%; width:160px; height:160px; border-radius:50%;
+      background: radial-gradient(circle at 35% 35%, #fff8e1 0%, var(--moon) 40%, var(--moon-dark) 80%, #8a7a50 100%);
+      box-shadow: 0 0 60px rgba(244,232,193,0.15), 0 0 120px rgba(244,232,193,0.05); opacity:0.85; animation: moonPulse 6s ease-in-out infinite; }
+  .trees-svg { position:absolute; bottom:0; width:100%; opacity:0.7; }
+  .hero-eyebrow { font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--blood-light); margin-bottom:1.5rem; position:relative; z-index:1; animation: fadeUp 1s ease 0.2s both; }
+  .hero-title { font-family:'Cinzel Decorative',serif; font-size:clamp(3.5rem,9vw,8rem); line-height:0.95; color:var(--moon); position:relative; z-index:1; animation: fadeUp 1s ease 0.4s both; text-shadow:0 0 80px rgba(139,0,0,0.4); }
+  .hero-title span { display:block; color:var(--blood-light); font-size:0.55em; letter-spacing:0.05em; margin-top:0.3em; }
+  .hero-subtitle { font-family:'EB Garamond',serif; font-style:italic; font-size:1.2rem; color:var(--moon-dark); max-width:540px; margin:2rem auto 0; position:relative; z-index:1; animation: fadeUp 1s ease 0.6s both; }
+  .hero-cta { display:flex; gap:1.5rem; margin-top:3rem; position:relative; z-index:1; animation: fadeUp 1s ease 0.8s both; }
+
+  .lp-btn-primary { font-family:'Cinzel',serif; font-size:0.8rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--shadow); background:var(--blood-light); border:none; padding:1rem 2.5rem; text-decoration:none; transition:all 0.3s; position:relative; overflow:hidden; display:inline-block; }
+  .lp-btn-primary::before { content:''; position:absolute; inset:0; background:var(--blood); transform:scaleX(0); transform-origin:left; transition:transform 0.3s; }
+  .lp-btn-primary:hover::before { transform:scaleX(1); }
+  .lp-btn-primary span { position:relative; z-index:1; }
+  .lp-btn-primary:hover { color:var(--moon); }
+  .lp-btn-secondary { font-family:'Cinzel',serif; font-size:0.8rem; letter-spacing:0.15em; text-transform:uppercase; color:var(--moon-dark); background:transparent; border:1px solid rgba(244,232,193,0.3); padding:1rem 2.5rem; text-decoration:none; transition:all 0.3s; display:inline-block; }
+  .lp-btn-secondary:hover { border-color:var(--moon); color:var(--moon); background:rgba(244,232,193,0.05); }
+
+  .scroll-hint { position:absolute; bottom:2rem; left:50%; transform:translateX(-50%); display:flex; flex-direction:column; align-items:center; gap:0.5rem; z-index:1; animation: fadeUp 1s ease 1.2s both; }
+  .scroll-hint span { font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase; color:rgba(244,232,193,0.4); }
+  .scroll-line { width:1px; height:50px; background:linear-gradient(180deg, rgba(244,232,193,0.4) 0%, transparent 100%); animation: scrollLine 2s ease-in-out infinite; }
+  @keyframes scrollLine { 0%{transform:scaleY(0);transform-origin:top;opacity:0;} 50%{transform:scaleY(1);opacity:1;} 100%{transform:scaleY(0);transform-origin:bottom;opacity:0;} }
+
+  #screen-home section { position:relative; z-index:1; }
+  .container { max-width:1200px; margin:0 auto; padding:0 4rem; }
+  .section-label { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.4em; text-transform:uppercase; color:var(--blood-light); margin-bottom:1rem; display:block; }
+  .section-title { font-family:'Cinzel Decorative',serif; font-size:clamp(2rem,4vw,3.5rem); color:var(--moon); line-height:1.1; margin-bottom:1.5rem; }
+
+  #about { padding:8rem 0; background: linear-gradient(180deg, var(--shadow) 0%, rgba(27,20,12,0.95) 50%, var(--shadow) 100%); }
+  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:6rem; align-items:center; }
+  .about-text p { color:var(--moon-dark); margin-bottom:1.5rem; font-size:1.05rem; }
+  .about-text p em { color:var(--moon); font-style:italic; }
+  .parchment-card { background:var(--parchment); padding:3rem; position:relative; color:var(--ink); }
+  .parchment-card::before { content:''; position:absolute; inset:8px; border:1px solid rgba(26,26,26,0.2); pointer-events:none; }
+  .parchment-card::after { content:''; position:absolute; top:0; left:0; width:100%; height:4px; background:var(--blood); }
+  .parchment-title { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.3em; text-transform:uppercase; color:var(--blood); margin-bottom:1.5rem; }
+  .parchment-body { font-family:'EB Garamond',serif; font-style:italic; font-size:1.05rem; line-height:1.9; color:var(--ink); }
+  .parchment-signature { margin-top:1.5rem; font-family:'Cinzel',serif; font-size:0.7rem; color:var(--blood-dark); text-align:right; letter-spacing:0.1em; }
+
+  #ruoli { padding:8rem 0; background:var(--shadow); }
+  .ruoli-header { text-align:center; margin-bottom:5rem; }
+  .cards-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; }
+  .role-card { position:relative; overflow:hidden; aspect-ratio:2/3; cursor:crosshair; }
+  .role-card-bg { position:absolute; inset:0; transition:transform 0.6s cubic-bezier(0.4,0,0.2,1); }
+  .role-card:hover .role-card-bg { transform:scale(1.08); }
+  .card-villagers .role-card-bg { background:linear-gradient(160deg,#1a3a1a 0%,#0d2010 40%,#050e07 100%); }
+  .card-lupo .role-card-bg { background:linear-gradient(160deg,#3a0a0a 0%,#1a0505 40%,#0a0202 100%); }
+  .card-veggente .role-card-bg { background:linear-gradient(160deg,#1a1a3a 0%,#0d0d20 40%,#050508 100%); }
+  .card-medium .role-card-bg { background:linear-gradient(160deg,#2a1a3a 0%,#180d22 40%,#0a0510 100%); }
+  .card-guardia .role-card-bg { background:linear-gradient(160deg,#2a2a2a 0%,#151515 40%,#050505 100%); }
+  .card-criceto .role-card-bg { background:linear-gradient(160deg,#3a2a1a 0%,#20150d 40%,#0d0805 100%); }
+  .role-card-symbol { position:absolute; top:50%; left:50%; transform:translate(-50%,-60%); font-size:4.5rem; opacity:0.15; transition:opacity 0.4s,transform 0.4s; user-select:none; }
+  .role-card:hover .role-card-symbol { opacity:0.25; transform:translate(-50%,-65%) scale(1.1); }
+  .role-card-content { position:absolute; bottom:0; left:0; right:0; padding:2rem 1.5rem; background:linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%); transform:translateY(30%); transition:transform 0.4s ease; }
+  .role-card:hover .role-card-content { transform:translateY(0); }
+  .role-name { font-family:'Cinzel',serif; font-size:1.1rem; color:var(--moon); letter-spacing:0.05em; margin-bottom:0.3rem; }
+  .role-team { font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase; margin-bottom:0.8rem; }
+  .card-villagers .role-team, .card-veggente .role-team, .card-medium .role-team, .card-guardia .role-team { color:#6ab04c; }
+  .card-lupo .role-team { color:var(--blood-light); }
+  .card-criceto .role-team { color:var(--hamster); }
+  .role-desc { font-family:'EB Garamond',serif; font-size:0.9rem; color:rgba(212,196,154,0.8); line-height:1.6; opacity:0; transform:translateY(10px); transition:opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s; }
+  .role-card:hover .role-desc { opacity:1; transform:translateY(0); }
+  .role-border { position:absolute; inset:0; border:1px solid transparent; transition:border-color 0.4s; pointer-events:none; }
+  .card-lupo:hover .role-border { border-color:rgba(196,30,58,0.4); }
+  .card-veggente:hover .role-border { border-color:rgba(80,80,200,0.3); }
+  .card-medium:hover .role-border { border-color:rgba(120,50,180,0.3); }
+  .card-guardia:hover .role-border { border-color:rgba(180,180,180,0.3); }
+  .card-villagers:hover .role-border { border-color:rgba(80,160,60,0.3); }
+  .card-criceto:hover .role-border { border-color:rgba(212,163,115,0.3); }
+
+  #regole { padding:8rem 0; background:linear-gradient(180deg, var(--shadow) 0%, rgba(10,5,2,1) 100%); }
+  .regole-grid { display:grid; grid-template-columns:1fr 1.5fr; gap:5rem; align-items:start; }
+  .phase-list { list-style:none; counter-reset:phase-counter; }
+  .phase-item { counter-increment:phase-counter; display:grid; grid-template-columns:3rem 1fr; gap:1.5rem; padding:2rem 0; border-bottom:1px solid rgba(244,232,193,0.08); position:relative; }
+  .phase-item:last-child { border-bottom:none; }
+  .phase-number { font-family:'Cinzel Decorative',serif; font-size:2rem; color:var(--blood); line-height:1; padding-top:0.2rem; opacity:0.5; }
+  .phase-title { font-family:'Cinzel',serif; font-size:1rem; color:var(--moon); letter-spacing:0.05em; margin-bottom:0.5rem; }
+  .phase-desc { font-size:0.95rem; color:var(--moon-dark); opacity:0.8; }
+  .rules-aside { position:sticky; top:6rem; }
+  .rules-blockquote { border-left:3px solid var(--blood); padding-left:2rem; margin-bottom:3rem; }
+  .rules-blockquote p { font-style:italic; font-size:1.1rem; color:var(--moon-dark); margin-bottom:0.5rem; }
+  .rules-blockquote cite { font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.2em; color:var(--blood-light); }
+  .stat-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(244,232,193,0.06); border:1px solid rgba(244,232,193,0.06); }
+  .stat-item { background:var(--shadow); padding:1.5rem; text-align:center; }
+  .stat-number { font-family:'Cinzel Decorative',serif; font-size:2.5rem; color:var(--moon); display:block; }
+  .stat-label { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--blood-light); margin-top:0.25rem; display:block; }
+
+  #gioca { padding:10rem 0; text-align:center; background:var(--forest); position:relative; overflow:hidden; }
+  #gioca::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 60% at 50% 50%, rgba(139,0,0,0.15) 0%, transparent 70%); }
+  .gioca-inner { position:relative; z-index:1; }
+  .price-note { font-family:'Cinzel',serif; font-size:0.9rem; color:var(--moon-dark); opacity:0.8; max-width:600px; margin:1.5rem auto 3rem; line-height:1.8; }
+  .product-features { display:flex; justify-content:center; gap:3rem; margin:3rem 0; list-style:none; }
+  .product-features li { font-family:'Cinzel',serif; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--moon-dark); opacity:0.7; display:flex; align-items:center; gap:0.5rem; }
+  .product-features li::before { content:'✦'; color:var(--blood-light); font-size:0.5rem; }
+
+  /* play form embedded in #gioca */
+  .play-card { max-width:520px; margin:0 auto; background:rgba(0,0,0,0.45); border:1px solid rgba(244,232,193,0.18); padding:2.4rem 2.2rem; position:relative; backdrop-filter:blur(2px); text-align:left; }
+  .play-card::after { content:''; position:absolute; top:0; left:0; width:100%; height:3px; background:var(--blood); opacity:.7; }
+  .play-card .panel-title { font-family:'Cinzel',serif; font-size:.68rem; letter-spacing:.3em; text-transform:uppercase; color:var(--blood-light); margin-bottom:1.4rem; text-align:center; }
+  .play-divider { height:1px; background:rgba(244,232,193,.14); margin:1.6rem 0 1.4rem; }
+
+  footer { background:var(--shadow); border-top:1px solid rgba(139,0,0,0.2); padding:3rem 4rem; display:flex; align-items:center; justify-content:space-between; }
+  .footer-logo { font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--blood-light); letter-spacing:0.1em; }
+  .footer-copy { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.15em; color:rgba(244,232,193,0.3); text-align:center; }
+  .footer-links { display:flex; gap:1.5rem; list-style:none; }
+  .footer-links a { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:rgba(244,232,193,0.4); text-decoration:none; transition:color 0.3s; }
+  .footer-links a:hover { color:var(--blood-light); }
+
+  .reveal { opacity:0; transform:translateY(40px); transition:opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity:1; transform:translateY(0); }
+  .reveal-delay-1 { transition-delay:0.1s; }
+  .reveal-delay-2 { transition-delay:0.2s; }
+  .reveal-delay-3 { transition-delay:0.3s; }
+  .reveal-delay-4 { transition-delay:0.4s; }
+  .blood-accent { position:absolute; top:0; left:50%; transform:translateX(-50%); width:2px; height:60px; background:linear-gradient(180deg, var(--blood-light) 0%, transparent 100%); opacity:0.5; }
 
-  .moon-circle {
-    position: absolute;
-    top: 8%;
-    right: 12%;
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #fff8e1 0%, var(--moon) 40%, var(--moon-dark) 80%, #8a7a50 100%);
-    box-shadow: 0 0 60px rgba(244,232,193,0.15), 0 0 120px rgba(244,232,193,0.05);
-    opacity: 0.85;
-    animation: moonPulse 6s ease-in-out infinite;
-  }
-
-  @keyframes moonPulse {
-    0%, 100% { box-shadow: 0 0 60px rgba(244,232,193,0.15), 0 0 120px rgba(244,232,193,0.05); }
-    50% { box-shadow: 0 0 80px rgba(244,232,193,0.25), 0 0 160px rgba(244,232,193,0.08); }
-  }
-
-  .trees {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 35%;
-    background: linear-gradient(180deg, transparent 0%, rgba(15,25,18,0.6) 40%, rgba(10,18,13,0.95) 100%);
-  }
-
-  .trees-svg {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    opacity: 0.7;
-  }
-
-  .hero-eyebrow {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--blood-light);
-    margin-bottom: 1.5rem;
-    position: relative;
-    z-index: 1;
-    animation: fadeUp 1s ease 0.2s both;
-  }
-
-  .hero-title {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(3.5rem, 9vw, 8rem);
-    line-height: 0.95;
-    color: var(--moon);
-    position: relative;
-    z-index: 1;
-    animation: fadeUp 1s ease 0.4s both;
-    text-shadow: 0 0 80px rgba(139,0,0,0.4);
-  }
-
-  .hero-title span {
-    display: block;
-    color: var(--blood-light);
-    font-size: 0.55em;
-    letter-spacing: 0.05em;
-    margin-top: 0.3em;
-  }
-
-  .hero-subtitle {
-    font-family: 'EB Garamond', serif;
-    font-style: italic;
-    font-size: 1.2rem;
-    color: var(--moon-dark);
-    max-width: 540px;
-    margin: 2rem auto 0;
-    position: relative;
-    z-index: 1;
-    animation: fadeUp 1s ease 0.6s both;
-  }
-
-  .hero-cta {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 3rem;
-    position: relative;
-    z-index: 1;
-    animation: fadeUp 1s ease 0.8s both;
-  }
-
-  .btn-primary {
-    font-family: 'Cinzel', serif;
-    font-size: 0.8rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--shadow);
-    background: var(--blood-light);
-    border: none;
-    padding: 1rem 2.5rem;
-    text-decoration: none;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-primary::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--blood);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s;
-  }
-
-  .btn-primary:hover::before { transform: scaleX(1); }
-  .btn-primary span { position: relative; z-index: 1; }
-  .btn-primary:hover { color: var(--moon); }
-
-  .btn-secondary {
-    font-family: 'Cinzel', serif;
-    font-size: 0.8rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--moon-dark);
-    background: transparent;
-    border: 1px solid rgba(244,232,193,0.3);
-    padding: 1rem 2.5rem;
-    text-decoration: none;
-    transition: all 0.3s;
-  }
-
-  .btn-secondary:hover {
-    border-color: var(--moon);
-    color: var(--moon);
-    background: rgba(244,232,193,0.05);
-  }
-
-  .scroll-hint {
-    position: absolute;
-    bottom: 2rem;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    z-index: 1;
-    animation: fadeUp 1s ease 1.2s both;
-  }
-
-  .scroll-hint span {
-    font-family: 'Cinzel', serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: rgba(244,232,193,0.4);
-  }
-
-  .scroll-line {
-    width: 1px;
-    height: 50px;
-    background: linear-gradient(180deg, rgba(244,232,193,0.4) 0%, transparent 100%);
-    animation: scrollLine 2s ease-in-out infinite;
-  }
-
-  @keyframes scrollLine {
-    0% { transform: scaleY(0); transform-origin: top; opacity: 0; }
-    50% { transform: scaleY(1); opacity: 1; }
-    100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ─── SECTIONS ─── */
-  section { position: relative; z-index: 1; }
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 4rem;
-  }
-
-  .section-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--blood-light);
-    margin-bottom: 1rem;
-    display: block;
-  }
-
-  .section-title {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    color: var(--moon);
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-  }
-
-  /* ─── ABOUT SECTION ─── */
-  #about {
-    padding: 8rem 0;
-    background: linear-gradient(180deg, var(--shadow) 0%, rgba(27,20,12,0.95) 50%, var(--shadow) 100%);
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6rem;
-    align-items: center;
-  }
-
-  .about-text p {
-    color: var(--moon-dark);
-    margin-bottom: 1.5rem;
-    font-size: 1.05rem;
-  }
-
-  .about-text p em { color: var(--moon); font-style: italic; }
-
-  .parchment-card {
-    background: var(--parchment);
-    padding: 3rem;
-    position: relative;
-    color: var(--ink);
-  }
-
-  .parchment-card::before {
-    content: '';
-    position: absolute;
-    inset: 8px;
-    border: 1px solid rgba(26,26,26,0.2);
-    pointer-events: none;
-  }
-
-  .parchment-card::after {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 4px;
-    background: var(--blood);
-  }
-
-  .parchment-title {
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--blood);
-    margin-bottom: 1.5rem;
-  }
-
-  .parchment-body {
-    font-family: 'EB Garamond', serif;
-    font-style: italic;
-    font-size: 1.05rem;
-    line-height: 1.9;
-    color: var(--ink);
-  }
-
-  .parchment-signature {
-    margin-top: 1.5rem;
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    color: var(--blood-dark);
-    text-align: right;
-    letter-spacing: 0.1em;
-  }
-
-  /* ─── RUOLI / CARDS ─── */
-  #ruoli {
-    padding: 8rem 0;
-    background: var(--shadow);
-  }
-
-  .ruoli-header { text-align: center; margin-bottom: 5rem; }
-
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-  }
-
-  .role-card {
-    position: relative;
-    overflow: hidden;
-    aspect-ratio: 2/3;
-    cursor: crosshair;
-  }
-
-  .role-card-bg {
-    position: absolute;
-    inset: 0;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .role-card:hover .role-card-bg { transform: scale(1.08); }
-
-  .card-villagers .role-card-bg { background: linear-gradient(160deg, #1a3a1a 0%, #0d2010 40%, #050e07 100%); }
-  .card-lupo .role-card-bg { background: linear-gradient(160deg, #3a0a0a 0%, #1a0505 40%, #0a0202 100%); }
-  .card-veggente .role-card-bg { background: linear-gradient(160deg, #1a1a3a 0%, #0d0d20 40%, #050508 100%); }
-  .card-medium .role-card-bg { background: linear-gradient(160deg, #2a1a3a 0%, #180d22 40%, #0a0510 100%); }
-  .card-guardia .role-card-bg { background: linear-gradient(160deg, #2a2a2a 0%, #151515 40%, #050505 100%); }
-  .card-criceto .role-card-bg { background: linear-gradient(160deg, #3a2a1a 0%, #20150d 40%, #0d0805 100%); }
-
-  .role-card-symbol {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -60%);
-    font-size: 4.5rem;
-    opacity: 0.15;
-    transition: opacity 0.4s, transform 0.4s;
-    user-select: none;
-  }
-
-  .role-card:hover .role-card-symbol {
-    opacity: 0.25;
-    transform: translate(-50%, -65%) scale(1.1);
-  }
-
-  .role-card-content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 2rem 1.5rem;
-    background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
-    transform: translateY(30%);
-    transition: transform 0.4s ease;
-  }
-
-  .role-card:hover .role-card-content { transform: translateY(0); }
-
-  .role-name {
-    font-family: 'Cinzel', serif;
-    font-size: 1.1rem;
-    color: var(--moon);
-    letter-spacing: 0.05em;
-    margin-bottom: 0.3rem;
-  }
-
-  .role-team {
-    font-family: 'Cinzel', serif;
-    font-size: 0.6rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    margin-bottom: 0.8rem;
-  }
-
-  .card-villagers .role-team,
-  .card-veggente .role-team,
-  .card-medium .role-team,
-  .card-guardia .role-team { color: #6ab04c; }
-
-  .card-lupo .role-team { color: var(--blood-light); }
-  .card-criceto .role-team { color: var(--hamster); }
-
-  .role-desc {
-    font-family: 'EB Garamond', serif;
-    font-size: 0.9rem;
-    color: rgba(212,196,154,0.8);
-    line-height: 1.6;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
-  }
-
-  .role-card:hover .role-desc { opacity: 1; transform: translateY(0); }
-
-  .role-border {
-    position: absolute;
-    inset: 0;
-    border: 1px solid transparent;
-    transition: border-color 0.4s;
-    pointer-events: none;
-  }
-
-  .card-lupo:hover .role-border { border-color: rgba(196,30,58,0.4); }
-  .card-veggente:hover .role-border { border-color: rgba(80,80,200,0.3); }
-  .card-medium:hover .role-border { border-color: rgba(120,50,180,0.3); }
-  .card-guardia:hover .role-border { border-color: rgba(180,180,180,0.3); }
-  .card-villagers:hover .role-border { border-color: rgba(80,160,60,0.3); }
-  .card-criceto:hover .role-border { border-color: rgba(212,163,115,0.3); }
-
-  /* ─── COME SI GIOCA ─── */
-  #regole {
-    padding: 8rem 0;
-    background: linear-gradient(180deg, var(--shadow) 0%, rgba(10,5,2,1) 100%);
-  }
-
-  .regole-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr;
-    gap: 5rem;
-    align-items: start;
-  }
-
-  .phase-list { list-style: none; counter-reset: phase-counter; }
-
-  .phase-item {
-    counter-increment: phase-counter;
-    display: grid;
-    grid-template-columns: 3rem 1fr;
-    gap: 1.5rem;
-    padding: 2rem 0;
-    border-bottom: 1px solid rgba(244,232,193,0.08);
-    position: relative;
-  }
-
-  .phase-item:last-child { border-bottom: none; }
-
-  .phase-number {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 2rem;
-    color: var(--blood);
-    line-height: 1;
-    padding-top: 0.2rem;
-    opacity: 0.5;
-  }
-
-  .phase-title {
-    font-family: 'Cinzel', serif;
-    font-size: 1rem;
-    color: var(--moon);
-    letter-spacing: 0.05em;
-    margin-bottom: 0.5rem;
-  }
-
-  .phase-desc {
-    font-size: 0.95rem;
-    color: var(--moon-dark);
-    opacity: 0.8;
-  }
-
-  .rules-aside { position: sticky; top: 6rem; }
-
-  .rules-blockquote {
-    border-left: 3px solid var(--blood);
-    padding-left: 2rem;
-    margin-bottom: 3rem;
-  }
-
-  .rules-blockquote p {
-    font-style: italic;
-    font-size: 1.1rem;
-    color: var(--moon-dark);
-    margin-bottom: 0.5rem;
-  }
-
-  .rules-blockquote cite {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    color: var(--blood-light);
-  }
-
-  .stat-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    background: rgba(244,232,193,0.06);
-    border: 1px solid rgba(244,232,193,0.06);
-  }
-
-  .stat-item {
-    background: var(--shadow);
-    padding: 1.5rem;
-    text-align: center;
-  }
-
-  .stat-number {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 2.5rem;
-    color: var(--moon);
-    display: block;
-  }
-
-  .stat-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--blood-light);
-    margin-top: 0.25rem;
-    display: block;
-  }
-
-  /* ─── GIOCA ONLINE ─── */
-  #gioca {
-    padding: 10rem 0;
-    text-align: center;
-    background: var(--forest);
-    position: relative;
-    overflow: hidden;
-  }
-
-  #gioca::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(139,0,0,0.15) 0%, transparent 70%);
-  }
-
-  .gioca-inner { position: relative; z-index: 1; }
-
-  .price-note {
-    font-family: 'Cinzel', serif;
-    font-size: 0.9rem;
-    color: var(--moon-dark);
-    opacity: 0.8;
-    max-width: 600px;
-    margin: 1.5rem auto 3rem;
-    line-height: 1.8;
-  }
-
-  .product-features {
-    display: flex;
-    justify-content: center;
-    gap: 3rem;
-    margin: 3rem 0;
-    list-style: none;
-  }
-
-  .product-features li {
-    font-family: 'Cinzel', serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--moon-dark);
-    opacity: 0.7;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .product-features li::before {
-    content: '✦';
-    color: var(--blood-light);
-    font-size: 0.5rem;
-  }
-
-  .btn-buy {
-    font-family: 'Cinzel', serif;
-    font-size: 0.9rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--moon);
-    background: transparent;
-    border: 1px solid rgba(244,232,193,0.4);
-    padding: 1.2rem 4rem;
-    text-decoration: none;
-    transition: all 0.4s;
-    display: inline-block;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn-buy::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--blood);
-    transform: scaleY(0);
-    transform-origin: bottom;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .btn-buy:hover::before { transform: scaleY(1); }
-  .btn-buy span { position: relative; z-index: 1; }
-  .btn-buy:hover { border-color: var(--blood); }
-
-  /* ─── FOOTER ─── */
-  footer {
-    background: var(--shadow);
-    border-top: 1px solid rgba(139,0,0,0.2);
-    padding: 3rem 4rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .footer-logo {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 0.9rem;
-    color: var(--blood-light);
-    letter-spacing: 0.1em;
-  }
-
-  .footer-copy {
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    color: rgba(244,232,193,0.3);
-    text-align: center;
-  }
-
-  .footer-links {
-    display: flex;
-    gap: 1.5rem;
-    list-style: none;
-  }
-
-  .footer-links a {
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(244,232,193,0.4);
-    text-decoration: none;
-    transition: color 0.3s;
-  }
-
-  .footer-links a:hover { color: var(--blood-light); }
-
-  /* ─── RESPONSIVE ─── */
   @media (max-width: 900px) {
-    .container { padding: 0 2rem; }
-    nav { padding: 1rem 2rem; }
-    .nav-links { display: none; }
-    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
-    .cards-grid { grid-template-columns: repeat(2, 1fr); }
-    .regole-grid { grid-template-columns: 1fr; }
-    .rules-aside { position: static; }
-    footer { flex-direction: column; gap: 1.5rem; text-align: center; }
-    .product-features { flex-wrap: wrap; gap: 1.5rem; }
+    nav { padding:1rem 2rem; }
+    .nav-links { display:none; }
+    .container { padding:0 2rem; }
+    .about-grid { grid-template-columns:1fr; gap:3rem; }
+    .cards-grid { grid-template-columns:repeat(2,1fr); }
+    .regole-grid { grid-template-columns:1fr; }
+    .rules-aside { position:static; }
+    footer { flex-direction:column; gap:1.5rem; text-align:center; }
+    .product-features { flex-wrap:wrap; gap:1.5rem; }
   }
-
   @media (max-width: 580px) {
-    .cards-grid { grid-template-columns: 1fr 1fr; }
-    .hero-cta { flex-direction: column; align-items: center; }
+    .cards-grid { grid-template-columns:1fr 1fr; }
+    .hero-cta { flex-direction:column; align-items:center; }
   }
 
-  /* ─── SCROLL ANIMATIONS ─── */
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+  /* new role cards on landing */
+  .card-gufo .role-card-bg { background:linear-gradient(160deg,#2a2438 0%,#161226 40%,#080610 100%); }
+  .card-gufo .role-team { color:#b7a6e0; }
+  .card-gufo:hover .role-border { border-color:rgba(150,120,210,0.35); }
+  .card-massoni .role-card-bg { background:linear-gradient(160deg,#1f3320 0%,#13241a 40%,#070f0a 100%); }
+  .card-massoni .role-team { color:#7fc06b; }
+  .card-massoni:hover .role-border { border-color:rgba(110,176,76,0.35); }
+  .card-prostituta .role-card-bg { background:linear-gradient(160deg,#3a1426 0%,#220a18 40%,#10050b 100%); }
+  .card-prostituta .role-team { color:#e08aa8; }
+  .card-prostituta:hover .role-border { border-color:rgba(224,138,168,0.4); }
+  .card-narratore .role-card-bg { background:linear-gradient(160deg,#33290f 0%,#1e1709 40%,#0d0a04 100%); }
+  .card-narratore .role-team { color:var(--gold); }
+  .card-narratore:hover .role-border { border-color:rgba(201,168,76,0.4); }
+
+  /* invite banner + form sub-labels */
+  .invite-banner { background:rgba(196,30,58,.16); border:1px solid rgba(196,30,58,.5); color:var(--moon); font-size:.92rem; line-height:1.5; padding:.8rem 1rem; margin-bottom:1.3rem; border-radius:2px; }
+  .play-sub { font-family:'EB Garamond',serif; font-style:italic; color:var(--moon-dark); font-size:.92rem; margin:.2rem 0 .7rem; }
+
+  /* ════════════ DAWN ANIMATIONS ════════════ */
+  .dawn-anim { display:flex; justify-content:center; margin:.6rem 0 1rem; }
+  .dawn-anim .da-stage { position:relative; width:160px; height:110px; display:flex; align-items:center; justify-content:center; }
+  .dawn-anim span { position:absolute; }
+  /* death: wolf lunges, blood, screen shake */
+  .dawn-anim.death .da-stage { animation: daShake .6s ease-in-out 2; }
+  .dawn-anim.death .da-moon { font-size:2.2rem; left:6px; top:4px; opacity:.6; }
+  .dawn-anim.death .da-claw { font-size:3.4rem; left:6px; animation: daLunge 1.1s cubic-bezier(.5,0,.3,1) both; }
+  .dawn-anim.death .da-victim { font-size:3rem; right:14px; opacity:0; animation: daHit 1.1s ease .5s both; }
+  .dawn-anim.death .da-slash { right:18px; width:70px; height:70px; border-right:4px solid var(--blood-light); border-top:4px solid var(--blood-light); transform:rotate(35deg) scale(0); opacity:0; border-radius:50%; animation: daSlash .5s ease .55s both; }
+  @keyframes daLunge { 0%{transform:translateX(0) scale(1);} 45%{transform:translateX(60px) scale(1.15);} 70%{transform:translateX(46px) scale(1.1);} 100%{transform:translateX(50px) scale(1.05);} }
+  @keyframes daHit { 0%{opacity:0; transform:scale(.6);} 55%{opacity:1; transform:scale(1.25);} 100%{opacity:1; transform:scale(1);} }
+  @keyframes daSlash { 0%{opacity:0; transform:rotate(35deg) scale(0);} 60%{opacity:1; transform:rotate(35deg) scale(1.1);} 100%{opacity:0; transform:rotate(35deg) scale(1.3);} }
+  @keyframes daShake { 0%,100%{transform:translateX(0);} 20%{transform:translateX(-6px);} 40%{transform:translateX(6px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(4px);} }
+  /* saved: wolf bounces off shield/rose with a glow */
+  .dawn-anim.saved .da-claw { font-size:3rem; left:8px; animation: daBounce 1.2s cubic-bezier(.5,0,.3,1) both; }
+  .dawn-anim.saved .da-guard { font-size:3.2rem; right:18px; animation: daGuardPulse 1.2s ease both; }
+  .dawn-anim.saved .da-spark { right:6px; width:90px; height:90px; border-radius:50%; opacity:0; animation: daGlow 1.4s ease .3s both; }
+  .dawn-anim.saved.shield .da-spark { box-shadow:0 0 0 2px rgba(150,200,255,.6), 0 0 40px rgba(120,170,255,.6); }
+  .dawn-anim.saved.rose .da-spark { box-shadow:0 0 0 2px rgba(224,138,168,.6), 0 0 40px rgba(224,90,140,.6); }
+  @keyframes daBounce { 0%{transform:translateX(0);} 45%{transform:translateX(40px);} 60%{transform:translateX(20px) rotate(-8deg);} 100%{transform:translateX(-6px) rotate(0);} }
+  @keyframes daGuardPulse { 0%{transform:scale(1);} 50%{transform:scale(1.25);} 100%{transform:scale(1);} }
+  @keyframes daGlow { 0%{opacity:0; transform:scale(.5);} 50%{opacity:1; transform:scale(1.05);} 100%{opacity:.25; transform:scale(1);} }
+  /* peace: sun rises */
+  .dawn-anim.peace .da-sun { position:relative; font-size:3.4rem; animation: daRise 1.4s ease both; }
+  @keyframes daRise { 0%{transform:translateY(28px); opacity:0;} 100%{transform:translateY(0); opacity:1;} }
+  @media (prefers-reduced-motion: reduce){ .dawn-anim *{ animation:none !important; } }
+
+  /* ════════════ MOBILE / TOUCH IMPROVEMENTS ════════════ */
+  @media (hover: none), (max-width: 700px) {
+    /* on touch there is no hover: reveal each role card's info by default */
+    .role-card-content { transform:none; background:linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.45) 70%, transparent 100%); }
+    .role-desc { opacity:1; transform:none; }
+    .role-card-symbol { opacity:0.22; }
+  }
+  @media (max-width: 700px) {
+    body { font-size:17px; }
+    nav { padding:.9rem 1.2rem; }
+    .hero { padding:0 1.2rem; }
+    .moon-circle { width:96px; height:96px; top:6%; right:8%; }
+    .hero-cta { width:100%; }
+    .hero-cta a { width:100%; text-align:center; }
+    #about, #ruoli, #regole { padding:4.5rem 0; }
+    #gioca { padding:5rem 0; }
+    .container { padding:0 1.2rem; }
+    .about-grid { gap:2rem; }
+    .parchment-card { padding:2rem; }
+    .cards-grid { gap:6px; }
+    .role-card { aspect-ratio:3/4; }
+    .role-card-content { padding:1.1rem 1rem; }
+    .role-name { font-size:1rem; }
+    .role-desc { font-size:.82rem; }
+    .regole-grid { gap:2.5rem; }
+    .play-card { padding:1.6rem 1.2rem; }
+    .stat-number { font-size:2rem; }
+    footer { padding:2rem 1.2rem; }
+    /* in-app screens */
+    #app-wrap { padding:1.2rem .9rem 4rem; }
+    .code-display { flex-direction:column; align-items:stretch; gap:1rem; }
+    .game-grid { grid-template-columns:1fr; }
+    .btn { padding:.85rem 1.2rem; }
+    .row > * { min-width:120px; }
+  }
+  @media (max-width: 380px) {
+    .cards-grid { grid-template-columns:1fr; }
   }
 
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  .reveal-delay-1 { transition-delay: 0.1s; }
-  .reveal-delay-2 { transition-delay: 0.2s; }
-  .reveal-delay-3 { transition-delay: 0.3s; }
-  .reveal-delay-4 { transition-delay: 0.4s; }
-
-  /* ─── BLOOD DRIP DECORATION ─── */
-  .blood-accent {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 2px;
-    height: 60px;
-    background: linear-gradient(180deg, var(--blood-light) 0%, transparent 100%);
-    opacity: 0.5;
+  /* ─── LOBBY ─── */
+  .code-display {
+    display:flex; align-items:center; justify-content:space-between; gap:1rem; flex-wrap:wrap;
+    background: rgba(0,0,0,.3); border:1px dashed var(--panel-line); padding:1rem 1.4rem; margin-bottom:1rem;
   }
+  .code-big { font-family:'Cinzel Decorative',serif; font-size:2rem; letter-spacing:.3em; color:var(--moon); }
+
+  .players-list { list-style:none; display:flex; flex-direction:column; gap:.5rem; }
+  .player-row {
+    display:flex; align-items:center; gap:.8rem; padding:.7rem 1rem;
+    background: rgba(0,0,0,.25); border:1px solid var(--panel-line); border-radius:2px;
+  }
+  .player-row .pname { flex:1; font-size:1.05rem; }
+  .badge {
+    font-family:'Cinzel',serif; font-size:.55rem; letter-spacing:.15em; text-transform:uppercase;
+    padding:.18rem .5rem; border-radius:2px; border:1px solid currentColor;
+  }
+  .badge.host { color: var(--gold); }
+  .badge.narr { color: #7e9bd6; }
+  .badge.you  { color: var(--blood-light); }
+  .badge.dead { color:#888; border-style:dashed; }
+  .dot { width:9px; height:9px; border-radius:50%; background:#3a3; box-shadow:0 0 8px #3a3; flex:none; }
+  .dot.off { background:#555; box-shadow:none; }
+
+  .role-config { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:.7rem; }
+  .role-toggle {
+    display:flex; align-items:center; gap:.7rem; padding:.7rem .9rem; border:1px solid var(--panel-line);
+    background: rgba(0,0,0,.25); border-radius:2px; cursor:pointer; transition:.2s;
+  }
+  .role-toggle:hover { border-color: var(--blood-light); }
+  .role-toggle.on { border-color: var(--blood-light); background: rgba(139,0,0,.14); }
+  .role-toggle.locked { cursor:default; opacity:.85; }
+  .role-toggle .emoji { font-size:1.4rem; flex:none; }
+  .role-toggle .meta { flex:1; }
+  .role-toggle .meta b { font-family:'Cinzel',serif; font-size:.78rem; letter-spacing:.04em; }
+  .role-toggle .meta small { display:block; color:var(--moon-dark); font-size:.72rem; opacity:.8; }
+  .role-toggle .check { width:18px; height:18px; border:1px solid var(--moon-dark); border-radius:2px; flex:none; position:relative; }
+  .role-toggle.on .check { background:var(--blood-light); border-color:var(--blood-light); }
+  .role-toggle.on .check::after { content:'✓'; position:absolute; inset:0; color:#000; font-size:.8rem; text-align:center; line-height:18px; }
+
+  .stepper { display:flex; align-items:center; gap:.6rem; }
+  .stepper button { width:30px; height:30px; border:1px solid var(--panel-line); background:rgba(0,0,0,.3); color:var(--moon); cursor:pointer; font-size:1.1rem; border-radius:2px;}
+  .stepper button:hover { border-color:var(--blood-light); }
+  .stepper .val { font-family:'Cinzel Decorative',serif; font-size:1.3rem; min-width:24px; text-align:center; }
+
+  /* ─── GAME ─── */
+  .phase-banner {
+    text-align:center; padding:1.6rem; margin-bottom:1.4rem; border:1px solid var(--panel-line);
+    position:relative; overflow:hidden;
+  }
+  .phase-banner .pl { font-family:'Cinzel',serif; font-size:.6rem; letter-spacing:.35em; text-transform:uppercase; color:var(--moon-dark);}
+  .phase-banner h2 { font-family:'Cinzel Decorative',serif; font-size:clamp(1.6rem,5vw,2.6rem); margin-top:.3rem; }
+  .phase-night { background: linear-gradient(135deg, #07111d 0%, #0a0a16 100%); }
+  .phase-night h2 { color:#9fb4d8; text-shadow:0 0 30px rgba(120,150,220,.4); }
+  .phase-day { background: linear-gradient(135deg, #2a1f0c 0%, #1a1206 100%); }
+  .phase-day h2 { color: var(--gold); text-shadow:0 0 30px rgba(201,168,76,.3); }
+  .phase-vote { background: linear-gradient(135deg, #2a0a0a 0%, #160505 100%); }
+  .phase-vote h2 { color: var(--blood-light); text-shadow:0 0 30px rgba(196,30,58,.4); }
+  .phase-banner .round-no { position:absolute; top:.6rem; right:1rem; font-family:'Cinzel',serif; font-size:.65rem; letter-spacing:.2em; color:var(--moon-dark); opacity:.7;}
+
+  .game-grid { display:grid; grid-template-columns: 1fr 320px; gap:1.4rem; align-items:start; }
+  @media(max-width:820px){ .game-grid { grid-template-columns:1fr; } }
+
+  .my-card {
+    text-align:center; padding:1.6rem; border:1px solid var(--panel-line); margin-bottom:1rem;
+    background: rgba(0,0,0,.3);
+  }
+  .my-card .emoji { font-size:3rem; }
+  .my-card .rname { font-family:'Cinzel',serif; font-size:1.3rem; margin-top:.3rem; }
+  .my-card .team { font-family:'Cinzel',serif; font-size:.6rem; letter-spacing:.25em; text-transform:uppercase; margin-top:.2rem; }
+  .my-card .rdesc { font-size:.92rem; color:var(--moon-dark); margin-top:.7rem; }
+  .team-village { color:#6ab04c; } .team-wolf { color:var(--blood-light);} .team-solo{color:var(--hamster);} .team-narr{color:#7e9bd6;}
+
+  .action-box { border:1px solid var(--blood-light); background:rgba(139,0,0,.08); padding:1.3rem; margin-bottom:1rem; }
+  .action-box h3 { font-size:.95rem; letter-spacing:.05em; margin-bottom:.3rem; }
+  .action-box p.sub { font-size:.85rem; color:var(--moon-dark); margin-bottom:.9rem; }
+
+  .target-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:.5rem; }
+  .target-btn {
+    padding:.7rem .6rem; border:1px solid var(--panel-line); background:rgba(0,0,0,.3); color:var(--moon);
+    cursor:pointer; border-radius:2px; transition:.2s; font-family:'EB Garamond',serif; font-size:.95rem; text-align:center;
+  }
+  .target-btn:hover { border-color:var(--blood-light); background:rgba(139,0,0,.12); }
+  .target-btn.selected { border-color:var(--blood-light); background:var(--blood); color:var(--moon); }
+  .target-btn:disabled { opacity:.3; cursor:not-allowed; }
+
+  .result-line { padding:.8rem 1rem; border-left:3px solid var(--gold); background:rgba(201,168,76,.08); margin-top:.8rem; font-style:italic;}
+  .result-line.wolf { border-color:var(--blood-light); background:rgba(196,30,58,.1); }
+
+  .info-tag { display:inline-block; font-family:'Cinzel',serif; font-size:.6rem; letter-spacing:.15em; text-transform:uppercase; color:var(--moon-dark); border:1px solid var(--panel-line); padding:.2rem .5rem; margin:.15rem .15rem 0 0; border-radius:2px;}
+
+  .controller-box { border:1px solid var(--gold); background:rgba(201,168,76,.06); padding:1.2rem; margin-bottom:1rem; }
+  .controller-box h3 { color:var(--gold); font-size:.8rem; letter-spacing:.1em; margin-bottom:.8rem; }
+
+  .side-panel { border:1px solid var(--panel-line); background:rgba(0,0,0,.25); padding:1rem; }
+  .side-panel h3 { font-size:.68rem; letter-spacing:.25em; text-transform:uppercase; color:var(--blood-light); margin-bottom:.7rem; }
+  .mini-player { display:flex; align-items:center; gap:.5rem; padding:.35rem .4rem; font-size:.92rem; border-bottom:1px solid rgba(244,232,193,.05); }
+  .mini-player.dead { opacity:.4; text-decoration:line-through; }
+  .mini-player .pr { margin-left:auto; font-size:.7rem; color:var(--moon-dark); }
+
+  .log { max-height:240px; overflow-y:auto; display:flex; flex-direction:column; gap:.4rem; }
+  .log-entry { font-size:.85rem; color:var(--moon-dark); padding:.4rem .5rem; border-left:2px solid var(--panel-line); }
+  .log-entry.death { border-color:var(--blood-light); color:#d8a; }
+  .log-entry.day { border-color:var(--gold); }
+
+  .chat { display:flex; flex-direction:column; gap:.5rem; margin-top:.8rem; }
+  .chat-msgs { max-height:200px; overflow-y:auto; display:flex; flex-direction:column; gap:.3rem; }
+  .chat-msg { font-size:.88rem; } .chat-msg b{ color:var(--moon); }
+  .chat-input { display:flex; gap:.4rem; } .chat-input input{ flex:1; padding:.5rem .7rem; }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,.8); z-index:200; display:none;
+    align-items:center; justify-content:center; padding:1rem; backdrop-filter: blur(3px);
+  }
+  .modal-overlay.show { display:flex; }
+  .modal {
+    background:var(--panel); border:1px solid var(--blood); max-width:440px; width:100%; padding:2rem; position:relative;
+    animation:fadeUp .3s ease both;
+  }
+  .modal h3 { font-family:'Cinzel',serif; margin-bottom:1rem; }
+  .modal p { color:var(--moon-dark); margin-bottom:1.4rem; }
+  .modal-actions { display:flex; gap:.8rem; justify-content:flex-end; }
+
+  /* ─── VICTORY OVERLAY ─── */
+  .victory {
+    position:fixed; inset:0; z-index:300; display:none; align-items:center; justify-content:center;
+    flex-direction:column; text-align:center; padding:2rem; overflow:hidden;
+  }
+  .victory.show { display:flex; }
+  .victory .v-title { font-family:'Cinzel Decorative',serif; font-size:clamp(2.2rem,8vw,5rem); line-height:1; position:relative; z-index:2; animation:vPop 1s cubic-bezier(.2,1.4,.4,1) both;}
+  .victory .v-sub { font-family:'Cinzel',serif; letter-spacing:.2em; margin-top:1rem; position:relative; z-index:2; opacity:0; animation:fadeUp .8s ease .6s both; }
+  .victory .v-btn { margin-top:2.5rem; position:relative; z-index:2; opacity:0; animation:fadeUp .8s ease 1s both;}
+  @keyframes vPop { 0%{opacity:0; transform:scale(.3) rotate(-8deg);} 100%{opacity:1; transform:none;} }
+
+  /* wolves */
+  .v-wolves { background:radial-gradient(ellipse at center, #2a0606 0%, #0a0202 70%, #000 100%); }
+  .v-wolves .v-title { color:var(--blood-light); text-shadow:0 0 40px rgba(196,30,58,.7); }
+  .v-bloodmoon {
+    position:absolute; top:12%; width:180px; height:180px; border-radius:50%;
+    background:radial-gradient(circle at 40% 40%, #ff5a5a 0%, #c41e3a 45%, #6a0a0a 100%);
+    box-shadow:0 0 90px rgba(196,30,58,.6), 0 0 180px rgba(196,30,58,.3);
+    animation:bloodPulse 3s ease-in-out infinite;
+  }
+  @keyframes bloodPulse { 0%,100%{transform:scale(1); filter:brightness(1);} 50%{transform:scale(1.06); filter:brightness(1.2);} }
+  .v-wolf-emoji { font-size:5rem; animation:wolfHowl 2.5s ease-in-out infinite; position:relative; z-index:2; }
+  @keyframes wolfHowl { 0%,100%{transform:translateY(0) rotate(0);} 40%{transform:translateY(-12px) rotate(-6deg);} 60%{transform:translateY(-12px) rotate(-6deg);} }
+  .blood-drip {
+    position:absolute; top:0; width:3px; background:linear-gradient(180deg,var(--blood-light),transparent);
+    animation:drip 3s ease-in infinite;
+  }
+  @keyframes drip { 0%{height:0; opacity:.8;} 100%{height:100vh; opacity:0;} }
+
+  /* village */
+  .v-village { background:linear-gradient(180deg, #3a2a0c 0%, #8a6a2a 40%, #e8c878 100%); }
+  .v-village .v-title { color:#3a2606; text-shadow:0 2px 20px rgba(255,255,255,.4); }
+  .v-village .v-sub { color:#4a3308; }
+  .v-sun {
+    position:absolute; bottom:-120px; width:300px; height:300px; border-radius:50%;
+    background:radial-gradient(circle, #fff6d0 0%, #ffd86a 50%, transparent 75%);
+    animation:sunrise 2.5s ease-out both;
+  }
+  @keyframes sunrise { from{transform:translateY(120px) scale(.6); opacity:0;} to{transform:none; opacity:1;} }
+  .v-ray {
+    position:absolute; bottom:0; left:50%; width:6px; height:60vh; transform-origin:bottom center;
+    background:linear-gradient(180deg, transparent, rgba(255,246,200,.25)); animation:rayFade 3s ease-in-out infinite alternate;
+  }
+  .v-village .v-emoji { font-size:4.5rem; position:relative; z-index:2; animation:vPop 1s ease .3s both;}
+  @keyframes rayFade { from{opacity:.1;} to{opacity:.4;} }
+
+  /* criceto */
+  .v-criceto { background:radial-gradient(ellipse at center, #5a3d1a 0%, #2a1c0a 70%, #100a04 100%); }
+  .v-criceto .v-title { color:var(--hamster); text-shadow:0 0 40px rgba(212,163,115,.6); }
+  .v-criceto .v-hamster { font-size:5.5rem; position:relative; z-index:2; animation:hamSpin 1.4s cubic-bezier(.3,1.5,.5,1) both, hamBounce 1.8s ease-in-out 1.4s infinite; }
+  @keyframes hamSpin { 0%{transform:scale(0) rotate(0);} 100%{transform:scale(1) rotate(720deg);} }
+  @keyframes hamBounce { 0%,100%{transform:translateY(0) rotate(720deg);} 50%{transform:translateY(-18px) rotate(720deg);} }
+  .confetti { position:absolute; width:10px; height:14px; top:-20px; animation:fall linear infinite; opacity:.9;}
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); } }
+
+  .toast {
+    position:fixed; bottom:1.5rem; left:50%; transform:translateX(-50%) translateY(120%);
+    background:var(--panel); border:1px solid var(--blood-light); padding:.8rem 1.4rem; z-index:250;
+    font-size:.95rem; transition:transform .4s; max-width:90%;
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); }
+
+  .divider { height:1px; background:var(--panel-line); margin:1.4rem 0; }
+  .center { text-align:center; }
+  .mt { margin-top:1rem; } .mb{margin-bottom:1rem;}
+  .small { font-size:.82rem; }
+  ::-webkit-scrollbar{width:8px;} ::-webkit-scrollbar-thumb{background:var(--blood-dark); border-radius:4px;}
 </style>
 </head>
 <body>
+<div class="app-bg"></div>
 
-<!-- NAVIGATION -->
-<nav>
-  <a href="#" class="nav-logo">Lupus in Tabula</a>
-  <ul class="nav-links">
-    <li><a href="#about">Il Gioco</a></li>
-    <li><a href="#ruoli">Ruoli</a></li>
-    <li><a href="#regole">Regole</a></li>
-    <li><a href="#gioca">Gioca Online</a></li>
-  </ul>
-</nav>
+<!-- ══════════ HOME / LANDING (full-bleed) ══════════ -->
+<div id="screen-home" class="screen active">
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-bg"></div>
-  <div class="moon-circle"></div>
-
-  <!-- Forest trees SVG -->
-  <svg class="trees-svg" viewBox="0 0 1440 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-    <path d="M0,300 L0,200 L40,160 L80,200 L80,140 L130,80 L180,140 L180,180 L220,130 L260,180 L260,200 L300,150 L340,200 L340,180 L390,100 L440,180 L440,200 L480,160 L520,200 L540,170 L580,110 L620,170 L640,180 L680,140 L720,180 L760,150 L800,100 L840,150 L880,180 L920,130 L960,180 L1000,160 L1040,110 L1080,160 L1100,180 L1140,140 L1180,180 L1220,150 L1260,90 L1300,150 L1340,180 L1380,140 L1440,200 L1440,300 Z" fill="rgba(15,25,18,0.8)"/>
-    <path d="M0,300 L0,240 L60,200 L90,240 L120,210 L160,240 L200,220 L240,170 L280,220 L320,240 L360,210 L400,240 L440,230 L480,200 L520,240 L560,220 L600,190 L640,220 L680,240 L720,210 L760,240 L800,230 L840,200 L880,240 L920,220 L960,240 L1000,210 L1040,240 L1080,220 L1120,190 L1160,220 L1200,240 L1240,220 L1280,200 L1320,240 L1360,220 L1440,240 L1440,300 Z" fill="rgba(8,14,10,0.95)"/>
-  </svg>
-
-  <span class="hero-eyebrow">— Gioca Online con i tuoi amici —</span>
-  <h1 class="hero-title">
-    Lupus
-    <span>in Tabula</span>
-  </h1>
-  <p class="hero-subtitle">Chi è il lupo? Chi mente? Chi sopravviverà alla notte?<br>Il celebre gioco di deduzione e inganno, ora direttamente nel tuo browser per 8–24 giocatori.</p>
-
-  <div class="hero-cta">
-    <a href="#gioca" class="btn-primary"><span>Crea una Stanza</span></a>
-    <a href="#regole" class="btn-secondary">Come si Gioca</a>
-  </div>
-
-  <div class="scroll-hint">
-    <span>Scorri</span>
-    <div class="scroll-line"></div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="container">
-    <div class="about-grid">
-      <div class="about-text reveal">
-        <span class="section-label">Il Villaggio è in pericolo</span>
-        <h2 class="section-title">Un Inganno<br>in Ogni Sorriso</h2>
-        <p>Lupus in Tabula è un <em>party game sociale</em> in cui i contadini devono smascherare e linciare i Lupi Mannari nascosti tra loro prima di essere sbranati tutti.</p>
-        <p>Il sistema online gestisce automaticamente la notte, chiamando i ruoli nell'ordine corretto. Di giorno si attiva la chat vocale per discutere: le alleanze si formano, i sospetti divampano e le menzogne diventano scudi.</p>
-        <p><em>Ma attenzione... nel caos tra Contadini e Lupi, il solitario Criceto Mannaro trama nell'ombra.</em></p>
-      </div>
-
-      <div class="parchment-card reveal reveal-delay-2">
-        <div class="parchment-title">✦ Cronache del Villaggio ✦</div>
-        <p class="parchment-body">
-          "Credevamo di aver trovato il colpevole, ma all'alba il villaggio contava un'altra vittima innocente. Il Veggente parla per enigmi, e quel tizio non fa che sorridere... potrebbe essere lui il Criceto?"
-        </p>
-        <div class="parchment-signature">— Diario del Master —</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- RUOLI -->
-<section id="ruoli">
-  <div class="container">
-    <div class="ruoli-header reveal">
-      <span class="section-label">Chi sei stanotte?</span>
-      <h2 class="section-title">I Ruoli Principali</h2>
-      <p style="color: var(--moon-dark); max-width: 500px; margin: 0 auto; font-style: italic; opacity: 0.8;">Passa il mouse su ogni carta per scoprire il potere nascosto di ciascun personaggio.</p>
-    </div>
-
-    <div class="cards-grid">
-
-      <!-- Contadino -->
-      <div class="role-card card-villagers reveal">
-        <div class="role-card-bg"></div>
-        <div class="role-card-symbol">🌾</div>
-        <div class="role-border"></div>
-        <div class="role-card-content">
-          <div class="role-name">Contadino</div>
-          <div class="role-team">Villaggio</div>
-          <div class="role-desc">Non ha poteri speciali durante la notte. Di giorno usa la logica, l'intuito e il voto per smascherare i lupi e salvare il villaggio.</div>
-        </div>
-      </div>
-
-      <!-- Lupo Mannaro -->
-      <div class="role-card card-lupo reveal reveal-delay-1">
-        <div class="role-card-bg"></div>
-        <div class="role-card-symbol">🐺</div>
-        <div class="role-border"></div>
-        <div class="role-card-content">
-          <div class="role-name">Lupo Mannaro</div>
-          <div class="role-team">Branco</div>
-          <div class="role-desc">Di notte si accorda in segreto con gli altri lupi per sbranare un innocente. Di giorno si finge un normale contadino.</div>
-        </div>
-      </div>
-
-      <!-- Veggente -->
-      <div class="role-card card-veggente reveal reveal-delay-2">
-        <div class="role-card-bg"></div>
-        <div class="role-card-symbol">🔮</div>
-        <div class="role-border"></div>
-        <div class="role-card-content">
-          <div class="role-name">Veggente</div>
-          <div class="role-team">Villaggio</div>
-          <div class="role-desc">Ogni notte sceglie un giocatore e il server gli rivela se è un Lupo o no. Se indaga sul Criceto Mannaro, quest'ultimo muore di spavento!</div>
-        </div>
-      </div>
-
-      <!-- Medium -->
-      <div class="role-card card-medium reveal reveal-delay-1">
-        <div class="role-card-bg"></div>
-        <div class="role-card-symbol">👻</div>
-        <div class="role-border"></div>
-        <div class="role-card-content">
-          <div class="role-name">Medium</div>
-          <div class="role-team">Villaggio</div>
-          <div class="role-desc">Viene chiamato durante la notte e scopre dal moderatore se il giocatore linciato la mattina precedente dalla folla era un Lupo Mannaro oppure no.</div>
-        </div>
-      </div>
-
-      <!-- Guardia del Corpo -->
-      <div class="role-card card-guardia reveal reveal-delay-2">
-        <div class="role-card-bg"></div>
-        <div class="role-card-symbol">🛡️</div>
-        <div class="role-border"></div>
-        <div class="role-card-content">
-          <div class="role-name">Guardia del Corpo</div>
-          <div class="role-team">Villaggio</div>
-          <div class="role-desc">Ogni notte protegge un giocatore. Se i Lupi provano a sbranare il protetto, questo sopravvive. Non può proteggere lo stesso giocatore due notti di fila.</div>
-        </div>
-      </div>
-
-      <!-- Criceto Mannaro -->
-      <div class="role-card card-criceto reveal reveal-delay-3">
-        <div class="role-card-bg"></div>
-        <div class="role-card-symbol">🐹</div>
-        <div class="role-border"></div>
-        <div class="role-card-content">
-          <div class="role-name">Criceto Mannaro</div>
-          <div class="role-team">Solitario</div>
-          <div class="role-desc">Fa squadra da solo! I Lupi non possono sbranarlo (se lo scelgono, nessuno muore). Muore istantaneamente se il Veggente prova a scrutarlo. Vince da solo se è ancora vivo a fine partita.</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- REGOLE -->
-<section id="regole">
-  <div class="container">
-    <div class="regole-grid">
-      <div>
-        <div class="reveal">
-          <span class="section-label">Fasi di Gioco</span>
-          <h2 class="section-title">Come Funziona</h2>
-        </div>
-
-        <ol class="phase-list">
-          <li class="phase-item reveal">
-            <span class="phase-number">I</span>
-            <div>
-              <div class="phase-title">Assegnazione Ruoli e Lobby</div>
-              <p class="phase-desc">L'host crea la partita e invita gli amici tramite link. Il server distribuisce casualmente e segretamente un ruolo a ciascun giocatore.</p>
-            </div>
-          </li>
-          <li class="phase-item reveal reveal-delay-1">
-            <span class="phase-number">II</span>
-            <div>
-              <div class="phase-title">La Notte</div>
-              <p class="phase-desc">Gli schermi si oscurano. Il sistema chiama in ordine: Guardia (sceglie chi proteggere), Veggente (indaga), Lupi (votano chi sbranare) e Medium (scopre il ruolo del morto del giorno prima). Il Criceto Mannaro sorride al buio e spera di non essere spiato dal Veggente.</p>
-            </div>
-          </li>
-          <li class="phase-item reveal reveal-delay-2">
-            <span class="phase-number">III</span>
-            <div>
-              <div class="phase-title">Il Giorno</div>
-              <p class="phase-desc">Arriva l'alba. Il server annuncia chi è stato sbranato o morto di spavento. Si apre la chat vocale: tutti discutono e analizzano i sospetti per trovare i colpevoli.</p>
-            </div>
-          </li>
-          <li class="phase-item reveal reveal-delay-3">
-            <span class="phase-number">IV</span>
-            <div>
-              <div class="phase-title">Il Voto e il Rogo</div>
-              <p class="phase-desc">Al termine del timer si vota chi mandare al rogo. Il giocatore più votato viene eliminato dalla partita, senza rivelare il proprio ruolo (a meno che non ci sia il Medium la notte successiva!).</p>
-            </div>
-          </li>
-          <li class="phase-item reveal reveal-delay-4">
-            <span class="phase-number">V</span>
-            <div>
-              <div class="phase-title">Condizioni di Vittoria</div>
-              <p class="phase-desc"><strong>Villaggio:</strong> Vince se elimina tutti i Lupi.<br><strong>Lupi:</strong> Vincono se pareggiano il numero dei Contadini in vita.<br><strong>Criceto Mannaro:</strong> Ruba la vittoria e vince da solo se è ancora in vita quando si verifica una delle due condizioni precedenti!</p>
-            </div>
-          </li>
-        </ol>
-      </div>
-
-      <div class="rules-aside">
-        <div class="rules-blockquote reveal">
-          <p>"Un buon Veggente salva il villaggio. Un finto Veggente domina il gioco."</p>
-          <cite>— La regola d'oro dei Lupi —</cite>
-        </div>
-
-        <div class="stat-grid reveal reveal-delay-1">
-          <div class="stat-item">
-            <span class="stat-number">8–24</span>
-            <span class="stat-label">Giocatori</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">25'</span>
-            <span class="stat-label">Minuti a Partita</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">Web</span>
-            <span class="stat-label">Piattaforma (No App)</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-number">100%</span>
-            <span class="stat-label">Gratuito</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- GIOCA ONLINE -->
-<section id="gioca">
-  <div class="gioca-inner container">
-    <div class="blood-accent"></div>
-    <span class="section-label reveal">La luna piena è sorta</span>
-    <h2 class="section-title reveal">Gioca Ora con i Tuoi Amici</h2>
-    <p class="price-note reveal">
-      Crea subito una lobby privata per te e il tuo gruppo. Non c'è bisogno di installare nulla: condividi il link di invito e fate partire il massacro direttamente da PC o Smartphone.
-    </p>
-
-    <ul class="product-features reveal">
-      <li>Chat Vocale e Testuale</li>
-      <li>Moderazione del Gioco Automatica</li>
-      <li>Set di Ruoli Personalizzabile</li>
-      <li>Cronologia degli Eventi e Voti Segreti</li>
+  <nav>
+    <a href="#" class="nav-logo">Lupus in Tabula</a>
+    <ul class="nav-links">
+      <li><a href="#about">Il Gioco</a></li>
+      <li><a href="#ruoli">Ruoli</a></li>
+      <li><a href="#regole">Regole</a></li>
+      <li><a href="#gioca">Gioca Online</a></li>
     </ul>
+  </nav>
 
-    <div style="display: flex; gap: 1.5rem; justify-content: center; margin-top: 3rem;">
-      <a href="#" class="btn-buy reveal reveal-delay-1"><span>Crea Stanza</span></a>
-      <a href="#" class="btn-secondary reveal reveal-delay-2">Unisciti a Partita</a>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="moon-circle"></div>
+    <svg class="trees-svg" viewBox="0 0 1440 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,300 L0,200 L40,160 L80,200 L80,140 L130,80 L180,140 L180,180 L220,130 L260,180 L260,200 L300,150 L340,200 L340,180 L390,100 L440,180 L440,200 L480,160 L520,200 L540,170 L580,110 L620,170 L640,180 L680,140 L720,180 L760,150 L800,100 L840,150 L880,180 L920,130 L960,180 L1000,160 L1040,110 L1080,160 L1100,180 L1140,140 L1180,180 L1220,150 L1260,90 L1300,150 L1340,180 L1380,140 L1440,200 L1440,300 Z" fill="rgba(15,25,18,0.8)"/>
+      <path d="M0,300 L0,240 L60,200 L90,240 L120,210 L160,240 L200,220 L240,170 L280,220 L320,240 L360,210 L400,240 L440,230 L480,200 L520,240 L560,220 L600,190 L640,220 L680,240 L720,210 L760,240 L800,230 L840,200 L880,240 L920,220 L960,240 L1000,210 L1040,240 L1080,220 L1120,190 L1160,220 L1200,240 L1240,220 L1280,200 L1320,240 L1360,220 L1440,240 L1440,300 Z" fill="rgba(8,14,10,0.95)"/>
+    </svg>
+
+    <span class="hero-eyebrow">— Gioca Online con i tuoi amici —</span>
+    <h1 class="hero-title">Lupus<span>in Tabula</span></h1>
+    <p class="hero-subtitle">Chi è il lupo? Chi mente? Chi sopravviverà alla notte?<br>Il celebre gioco di deduzione e inganno, ora direttamente nel tuo browser per 5–20 giocatori.</p>
+
+    <div class="hero-cta">
+      <a href="#gioca" class="lp-btn-primary"><span>Crea una Stanza</span></a>
+      <a href="#gioca" class="lp-btn-secondary" id="hero-join">Unisciti a una Partita</a>
+      <a href="#regole" class="lp-btn-secondary">Come si Gioca</a>
+    </div>
+
+    <div class="scroll-hint"><span>Scorri</span><div class="scroll-line"></div></div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <span class="section-label">Il Villaggio è in pericolo</span>
+          <h2 class="section-title">Un Inganno<br>in Ogni Sorriso</h2>
+          <p>Lupus in Tabula è un <em>party game sociale</em> in cui i contadini devono smascherare e linciare i Lupi Mannari nascosti tra loro prima di essere sbranati tutti.</p>
+          <p>Il sistema online gestisce la notte chiamando i ruoli nell'ordine corretto. Di giorno si discute: le alleanze si formano, i sospetti divampano e le menzogne diventano scudi.</p>
+          <p><em>Ma attenzione... nel caos tra Contadini e Lupi, il solitario Criceto Mannaro trama nell'ombra.</em></p>
+        </div>
+        <div class="parchment-card reveal reveal-delay-2">
+          <div class="parchment-title">✦ Cronache del Villaggio ✦</div>
+          <p class="parchment-body">"Credevamo di aver trovato il colpevole, ma all'alba il villaggio contava un'altra vittima innocente. Il Veggente parla per enigmi, e quel tizio non fa che sorridere... potrebbe essere lui il Criceto?"</p>
+          <div class="parchment-signature">— Diario del Master —</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RUOLI -->
+  <section id="ruoli">
+    <div class="container">
+      <div class="ruoli-header reveal">
+        <span class="section-label">Chi sei stanotte?</span>
+        <h2 class="section-title">I Ruoli Principali</h2>
+        <p style="color:var(--moon-dark); max-width:500px; margin:0 auto; font-style:italic; opacity:0.8;">Passa il mouse su ogni carta per scoprire il potere nascosto di ciascun personaggio.</p>
+      </div>
+      <div class="cards-grid">
+        <div class="role-card card-villagers reveal"><div class="role-card-bg"></div><div class="role-card-symbol">🌾</div><div class="role-border"></div><div class="role-card-content"><div class="role-name">Contadino</div><div class="role-team">Villaggio</div><div class="role-desc">Nessun potere notturno. Di giorno usa logica, intuito e voto per smascherare i lupi e salvare il villaggio.</div></div></div>
+        <div class="role-card card-lupo reveal reveal-delay-1"><div class="role-card-bg"></div><div class="role-card-symbol">🐺</div><div class="role-border"></div><div class="role-card-content"><div class="role-name">Lupo Mannaro</div><div class="role-team">Branco</div><div class="role-desc">Di notte si accorda in segreto con gli altri lupi per sbranare un innocente. Di giorno si finge un normale contadino.</div></div></div>
+        <div class="role-card card-veggente reveal reveal-delay-2"><div class="role-card-bg"></div><div class="role-card-symbol">🔮</div><div class="role-border"></div><div class="role-card-content"><div class="role-name">Veggente</div><div class="role-team">Villaggio</div><div class="role-desc">Ogni notte sceglie un giocatore e scopre subito se è un Lupo. Se indaga sul Criceto Mannaro, questo muore di spavento!</div></div></div>
+        <div class="role-card card-medium reveal reveal-delay-1"><div class="role-card-bg"></div><div class="role-card-symbol">👻</div><div class="role-border"></div><div class="role-card-content"><div class="role-name">Medium</div><div class="role-team">Villaggio</div><div class="role-desc">Durante la notte scopre se il giocatore mandato al rogo il giorno prima era un Lupo Mannaro oppure no.</div></div></div>
+        <div class="role-card card-guardia reveal reveal-delay-2"><div class="role-card-bg"></div><div class="role-card-symbol">🛡️</div><div class="role-border"></div><div class="role-card-content"><div class="role-name">Guardia del Corpo</div><div class="role-team">Villaggio</div><div class="role-desc">Ogni notte protegge un giocatore. Se i Lupi provano a sbranare il protetto, sopravvive. Non può proteggere lo stesso giocatore due notti di fila.</div></div></div>
+        <div class="role-card card-criceto reveal reveal-delay-3"><div class="role-card-bg"></div><div class="role-card-symbol">🐹</div><div class="role-border"></div><div class="role-card-content"><div class="role-name">Criceto Mannaro</div><div class="role-team">Solitario</div><div class="role-desc">Gioca da solo! I Lupi non possono sbranarlo. Muore se il Veggente prova a scrutarlo. Vince da solo se è vivo a fine partita.</div></div></div>
+        <div class="role-card card-gufo reveal"><div class="role-card-bg"></div><div class="role-card-symbol">🦉</div><div class="role-border"></div><div class="role-card-content"><div class="role-name">Gufo</div><div class="role-team">Villaggio</div><div class="role-desc">Di notte indica in segreto un giocatore: all'alba quel giocatore viene segnalato a tutti come sospetto, finendo automaticamente tra i candidati al rogo del giorno.</div></div></div>
+        <div class="role-card card-massoni reveal reveal-delay-1"><div class="role-card-bg"></div><div class="role-card-symbol">⚜️</div><div class="role-border"></div><div class="role-card-content"><div class="role-name">Massoni</div><div class="role-team">Villaggio</div><div class="role-desc">Sono due contadini che si conoscono fin dall'inizio: sanno di potersi fidare l'uno dell'altro e possono coordinarsi per smascherare i Lupi.</div></div></div>
+        <div class="role-card card-prostituta reveal reveal-delay-2"><div class="role-card-bg"></div><div class="role-card-symbol">🌹</div><div class="role-border"></div><div class="role-card-content"><div class="role-name">Prostituta</div><div class="role-team">Villaggio</div><div class="role-desc">Ogni notte passa la notte con un giocatore. Se lei o l'ospite vengono presi di mira dai Lupi, sopravvivono entrambi: l'attacco fallisce.</div></div></div>
+        <div class="role-card card-narratore reveal reveal-delay-3"><div class="role-card-bg"></div><div class="role-card-symbol">📖</div><div class="role-border"></div><div class="role-card-content"><div class="role-name">Narratore</div><div class="role-team">Master</div><div class="role-desc">Non riceve un ruolo e non gioca: vede tutte le carte, scandisce notte e giorno e annuncia gli esiti. Opzionale — senza di lui il sistema modera in automatico.</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGOLE -->
+  <section id="regole">
+    <div class="container">
+      <div class="regole-grid">
+        <div>
+          <div class="reveal"><span class="section-label">Fasi di Gioco</span><h2 class="section-title">Come Funziona</h2></div>
+          <ol class="phase-list">
+            <li class="phase-item reveal"><span class="phase-number">I</span><div><div class="phase-title">Assegnazione Ruoli e Lobby</div><p class="phase-desc">L'host crea la partita e invita gli amici tramite link. Il sistema distribuisce casualmente e segretamente un ruolo a ciascun giocatore.</p></div></li>
+            <li class="phase-item reveal reveal-delay-1"><span class="phase-number">II</span><div><div class="phase-title">La Notte</div><p class="phase-desc">Gli schermi si oscurano. Si chiamano in ordine: Guardia, Veggente, Lupi e Medium. Il Criceto Mannaro spera di non essere spiato dal Veggente.</p></div></li>
+            <li class="phase-item reveal reveal-delay-2"><span class="phase-number">III</span><div><div class="phase-title">Il Giorno</div><p class="phase-desc">Arriva l'alba. Si annuncia chi è stato sbranato o morto di spavento. Tutti discutono e analizzano i sospetti per trovare i colpevoli.</p></div></li>
+            <li class="phase-item reveal reveal-delay-3"><span class="phase-number">IV</span><div><div class="phase-title">Il Voto e il Rogo</div><p class="phase-desc">Si vota chi mandare al rogo. Il più votato viene eliminato senza rivelare il proprio ruolo (a meno che non ci sia il Medium la notte successiva!).</p></div></li>
+            <li class="phase-item reveal reveal-delay-4"><span class="phase-number">V</span><div><div class="phase-title">Condizioni di Vittoria</div><p class="phase-desc"><strong>Villaggio:</strong> elimina tutti i Lupi.<br><strong>Lupi:</strong> pareggiano il numero dei Contadini.<br><strong>Criceto Mannaro:</strong> ruba la vittoria se è vivo quando si verifica una delle due!</p></div></li>
+          </ol>
+        </div>
+        <div class="rules-aside">
+          <div class="rules-blockquote reveal"><p>"Un buon Veggente salva il villaggio. Un finto Veggente domina il gioco."</p><cite>— La regola d'oro dei Lupi —</cite></div>
+          <div class="stat-grid reveal reveal-delay-1">
+            <div class="stat-item"><span class="stat-number">5–20</span><span class="stat-label">Giocatori</span></div>
+            <div class="stat-item"><span class="stat-number">25'</span><span class="stat-label">Minuti a Partita</span></div>
+            <div class="stat-item"><span class="stat-number">Web</span><span class="stat-label">Piattaforma (No App)</span></div>
+            <div class="stat-item"><span class="stat-number">100%</span><span class="stat-label">Gratuito</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GIOCA ONLINE (con form funzionante) -->
+  <section id="gioca">
+    <div class="gioca-inner container">
+      <div class="blood-accent"></div>
+      <span class="section-label reveal">La luna piena è sorta</span>
+      <h2 class="section-title reveal">Gioca Ora con i Tuoi Amici</h2>
+      <p class="price-note reveal">Crea subito una lobby privata per il tuo gruppo. Non c'è bisogno di installare nulla: condividi il link di invito e fate partire il massacro da PC o Smartphone.</p>
+      <ul class="product-features reveal">
+        <li>Chat Testuale</li>
+        <li>Narratore o Moderazione Automatica</li>
+        <li>Set di Ruoli Personalizzabile</li>
+        <li>Voti Segreti e Cronologia</li>
+      </ul>
+
+      <div class="play-card">
+        <div id="invite-banner" class="invite-banner" style="display:none"></div>
+        <div class="panel-title">✦ Il tuo nome al villaggio ✦</div>
+        <label class="field">
+          <span>Come ti chiami? <i style="color:var(--blood-light)">(obbligatorio)</i></span>
+          <input type="text" id="input-name" placeholder="Es. Toro Alex" maxlength="20" autocomplete="off">
+        </label>
+
+        <div class="play-sub">Vuoi ospitare tu la partita?</div>
+        <button class="btn btn-primary btn-block" id="btn-create" disabled>🌙 Crea una Nuova Stanza</button>
+
+        <div class="play-divider"></div>
+
+        <div class="play-sub">Ti hanno mandato un codice o un link? Entra qui:</div>
+        <label class="field">
+          <span>Codice d'invito</span>
+          <input type="text" id="input-code" class="code-input" placeholder="CODICE" maxlength="5" autocomplete="off">
+        </label>
+        <button class="btn btn-ghost btn-block" id="btn-join" disabled>Unisciti alla Partita</button>
+        <p class="hint mt center" id="home-msg"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Lupus in Tabula Online</div>
+    <p class="footer-copy">© 2026 ToroAlex</p>
+    <ul class="footer-links">
+      <li><a href="#about">Il Gioco</a></li>
+      <li><a href="#ruoli">Ruoli</a></li>
+      <li><a href="#gioca">Gioca</a></li>
+    </ul>
+  </footer>
+</div>
+
+<div class="wrap" id="app-wrap">
+
+  <!-- ══════════ LOBBY ══════════ -->
+  <section id="screen-lobby" class="screen">
+    <div class="center mb">
+      <span class="eyebrow">— La stanza è aperta —</span>
+      <h1 class="display" style="font-size:clamp(1.8rem,5vw,3rem)">Sala d'Attesa</h1>
+    </div>
+
+    <div class="code-display">
+      <div>
+        <div class="hint small">Codice stanza</div>
+        <div class="code-big" id="lobby-code">-----</div>
+      </div>
+      <div class="row" style="flex:0 0 auto;">
+        <button class="btn btn-ghost btn-sm" id="btn-copy-code">Copia codice</button>
+        <button class="btn btn-primary btn-sm" id="btn-copy-link">Copia link d'invito</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">✦ Giocatori <span id="player-count"></span> ✦</div>
+      <ul class="players-list" id="lobby-players"></ul>
+    </div>
+
+    <div class="panel green">
+      <div class="panel-title" style="color:#6ab04c">✦ Configurazione Ruoli ✦</div>
+      <p class="hint mb" id="config-hint"></p>
+
+      <div class="role-toggle locked on" style="margin-bottom:.7rem; cursor:default;">
+        <span class="emoji">🐺</span>
+        <div class="meta"><b>Lupi Mannari</b><small>Il branco che caccia di notte</small></div>
+        <div class="stepper" id="wolf-stepper">
+          <button data-act="wolf-minus">−</button>
+          <span class="val" id="wolf-count">2</span>
+          <button data-act="wolf-plus">+</button>
+        </div>
+      </div>
+
+      <div class="role-config" id="role-config"></div>
+      <p class="hint mt" id="config-summary"></p>
+    </div>
+
+    <div class="panel" id="narrator-panel">
+      <div class="panel-title">✦ Il Narratore ✦</div>
+      <p class="hint mb">Il narratore (master) non gioca: vede tutte le carte e gestisce notte e giorno. Puoi assegnarlo a un altro giocatore, oppure rimuoverlo per un'esperienza con <em>moderazione automatica</em> in cui tutti giocano e nessuno vede le carte altrui.</p>
+      <div id="narrator-controls"></div>
+    </div>
+
+    <div class="row mt">
+      <button class="btn btn-ghost" id="btn-leave-lobby">Esci</button>
+      <button class="btn btn-primary" id="btn-start-game">🔥 Inizia la Partita</button>
+    </div>
+    <p class="hint center mt" id="lobby-msg"></p>
+  </section>
+
+  <!-- ══════════ GAME ══════════ -->
+  <section id="screen-game" class="screen">
+    <div class="phase-banner" id="phase-banner">
+      <span class="round-no" id="round-no"></span>
+      <div class="pl" id="phase-pl"></div>
+      <h2 id="phase-title"></h2>
+    </div>
+
+    <div class="game-grid">
+      <div>
+        <div id="my-card-host"></div>
+        <div id="controller-host"></div>
+        <div id="action-host"></div>
+        <div id="dawn-host"></div>
+      </div>
+
+      <aside>
+        <div class="side-panel mb">
+          <h3>Il Villaggio</h3>
+          <div id="side-players"></div>
+        </div>
+        <div class="side-panel">
+          <h3>Cronaca</h3>
+          <div class="log" id="game-log"></div>
+          <div class="chat">
+            <div class="chat-msgs" id="chat-msgs"></div>
+            <div class="chat-input">
+              <input type="text" id="chat-input" placeholder="Scrivi..." maxlength="160">
+              <button class="btn btn-ghost btn-sm" id="chat-send">Invia</button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="center mt">
+      <button class="btn btn-ghost btn-sm" id="btn-leave-game">Abbandona la partita</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3 id="modal-title">Conferma</h3>
+    <p id="modal-body"></p>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="modal-cancel">Annulla</button>
+      <button class="btn btn-danger btn-sm" id="modal-confirm">Conferma</button>
     </div>
   </div>
-</section>
+</div>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">Lupus in Tabula Online</div>
-  <p class="footer-copy">© 2026 Dedalo &amp; Zeus · Non affiliato a dV Giochi</p>
-  <ul class="footer-links">
-    <li><a href="#">Privacy</a></li>
-    <li><a href="#">Supporto</a></li>
-    <li><a href="#">Termini</a></li>
-  </ul>
-</footer>
+<!-- VICTORY -->
+<div class="victory" id="victory"></div>
 
-<script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
-    });
-  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
 
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+<script type="module">
+/* ════════════════════════════════════════════════════════════════
+   LUPUS IN TABULA — Multiplayer engine (Firebase Firestore)
+════════════════════════════════════════════════════════════════ */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import {
+  getFirestore, doc, setDoc, getDoc, updateDoc, onSnapshot, deleteField, deleteDoc, arrayUnion
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
-  // Parallax moon
-  window.addEventListener('scroll', () => {
-    const moon = document.querySelector('.moon-circle');
-    if (moon) {
-      const y = window.scrollY * 0.3;
-      moon.style.transform = `translateY(${y}px)`;
+const firebaseConfig = {
+  apiKey: "AIzaSyBkXX0jXn1VTfE5amfyLM8xy-ky2pBHWW4",
+  authDomain: "lupusintabula-65093.firebaseapp.com",
+  projectId: "lupusintabula-65093",
+  storageBucket: "lupusintabula-65093.firebasestorage.app",
+  messagingSenderId: "1005034507428",
+  appId: "1:1005034507428:web:0258af22b0ca7189642a31",
+  measurementId: "G-Q15C9V1P8W"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+
+/* ─── Helpers ─── */
+const $  = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => [...el.querySelectorAll(s)];
+const clone = o => JSON.parse(JSON.stringify(o));
+const rnd = n => Math.floor(Math.random()*n);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];} return a; }
+function tally(arr){ const m={}; arr.forEach(x=>{ if(x) m[x]=(m[x]||0)+1; }); return m; }
+function topKey(obj){ let best=null,bn=-1; for(const k in obj){ if(obj[k]>bn){bn=obj[k];best=k;} } return best; }
+function code5(){ const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s=""; for(let i=0;i<5;i++) s+=c[rnd(c.length)]; return s; }
+
+/* ─── Role metadata ─── */
+const ROLES = {
+  narratore:  { name:"Narratore", team:"narr",    emoji:"📖", desc:"Sei il master. Non hai un ruolo: vedi tutte le carte e gestisci le fasi di notte e giorno." },
+  contadino:  { name:"Contadino", team:"village", emoji:"🌾", desc:"Nessun potere notturno. Di giorno usa logica e voto per smascherare i lupi." },
+  lupo:       { name:"Lupo Mannaro", team:"wolf", emoji:"🐺", desc:"Di notte, insieme al branco, scegli chi sbranare. Di giorno fingi di essere innocente." },
+  veggente:   { name:"Veggente", team:"village", emoji:"🔮", desc:"Ogni notte scruti un giocatore e scopri subito se è un Lupo. Se scruti il Criceto, lo uccidi di spavento." },
+  medium:     { name:"Medium", team:"village",   emoji:"👻", desc:"Ogni notte scopri se il giocatore mandato al rogo il giorno prima era un Lupo." },
+  guardia:    { name:"Guardia del Corpo", team:"village", emoji:"🛡️", desc:"Ogni notte proteggi un giocatore dai Lupi. Non puoi proteggere la stessa persona due notti di fila." },
+  criceto:    { name:"Criceto Mannaro", team:"solo", emoji:"🐹", desc:"Gioca da solo! I Lupi non possono sbranarti. Muori se il Veggente ti scruta. Vinci se sei vivo a fine partita." },
+  gufo:       { name:"Gufo", team:"village",      emoji:"🦉", desc:"Di notte indichi un giocatore: il giorno dopo viene segnalato automaticamente come sospetto per il rogo." },
+  massone:    { name:"Massone", team:"village",   emoji:"⚜️", desc:"Conosci fin dall'inizio l'altro Massone. Siete due contadini fidati che si sostengono." },
+  prostituta: { name:"Prostituta", team:"village",emoji:"🌹", desc:"Ogni notte passi la notte con un giocatore: se uno dei due viene preso di mira dai Lupi, sopravvivete entrambi." }
+};
+const TEAM_LABEL = { village:"Villaggio", wolf:"Branco", solo:"Solitario", narr:"Master" };
+
+/* optional roles shown as toggles (lupi handled separately) */
+const OPTIONAL = ["veggente","medium","guardia","gufo","prostituta","criceto","massoni"];
+
+function defaultConfig(){
+  return { numLupi:2, veggente:true, medium:true, guardia:true, gufo:false, prostituta:false, criceto:false, massoni:false };
+}
+function freshGame(){
+  return { phase:"lobby", round:0, nightActions:{}, dayVotes:{}, lastNight:null, lastLynched:null,
+           owlMarked:null, prevProtect:null, winner:null, log:[], chat:[] };
+}
+
+/* ─── Identity ─── */
+let UID = localStorage.getItem("lupus_uid");
+if(!UID){ UID = "u_"+Math.random().toString(36).slice(2,11); localStorage.setItem("lupus_uid",UID); }
+let MYNAME = localStorage.getItem("lupus_name") || "";
+
+/* ─── Live state ─── */
+let CODE = null, REF = null, UNSUB = null, S = null, KICKED=false;
+
+/* ════════════ SCREEN ROUTING ════════════ */
+function show(id){
+  $$(".screen").forEach(s=>s.classList.remove("active"));
+  $("#"+id).classList.add("active");
+  document.body.classList.toggle("in-app", id!=="screen-home");
+  window.scrollTo(0,0);
+}
+
+function toast(msg){ const t=$("#toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove("show"),3200); }
+
+/* ════════════ SOUND ENGINE (WebAudio, no files) ════════════ */
+let _AC=null;
+function ac(){ try{ if(!_AC) _AC=new (window.AudioContext||window.webkitAudioContext)(); if(_AC.state==="suspended") _AC.resume(); }catch(e){} return _AC; }
+function beep(freq, dur=0.18, type="sine", vol=0.18, delay=0, sweepTo=null){
+  const a=ac(); if(!a) return;
+  const t0=a.currentTime+delay;
+  const o=a.createOscillator(), g=a.createGain();
+  o.type=type; o.frequency.setValueAtTime(freq,t0);
+  if(sweepTo) o.frequency.exponentialRampToValueAtTime(sweepTo, t0+dur);
+  g.gain.setValueAtTime(0.0001,t0);
+  g.gain.exponentialRampToValueAtTime(vol, t0+0.02);
+  g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+  o.connect(g).connect(a.destination); o.start(t0); o.stop(t0+dur+0.02);
+}
+/* a short distinct cue per role/action, played when that player confirms */
+function playRoleSound(kind){
+  switch(kind){
+    case "wolf":       beep(150,0.28,"sawtooth",0.2); beep(90,0.34,"sawtooth",0.18,0.10); break; // growl
+    case "seer":       beep(880,0.14,"sine",0.16); beep(1320,0.18,"sine",0.14,0.12); break;      // shimmer
+    case "guard":      beep(440,0.16,"triangle",0.18); beep(660,0.2,"triangle",0.16,0.12); break;// firm
+    case "owl":        beep(520,0.16,"sine",0.16,0,420); beep(520,0.16,"sine",0.16,0.22,420); break; // hoot-hoot
+    case "prostitute": beep(620,0.18,"sine",0.14,0,780); break;                                   // soft rise
+    case "vote":       beep(330,0.12,"square",0.14); break;                                       // tap
+    default:           beep(500,0.12,"sine",0.12);
+  }
+}
+let _dawnSoundRound=-1;
+function playDawnSound(ln){
+  const g=S.game; if(_dawnSoundRound===g.round) return; _dawnSoundRound=g.round;
+  if(ln.deaths && ln.deaths.length){ // ominous tritone fall
+    beep(330,0.5,"sawtooth",0.2); beep(233,0.6,"sawtooth",0.18,0.18);
+  } else if(ln.blocked){            // bright protective chime
+    beep(660,0.18,"triangle",0.16); beep(990,0.22,"triangle",0.15,0.14);
+  } else {                          // calm dawn
+    beep(523,0.22,"sine",0.14); beep(784,0.26,"sine",0.13,0.16);
+  }
+}
+
+/* ════════════ MODAL (confirm) ════════════ */
+let modalCb=null;
+function confirmDialog(title, body, onYes){
+  $("#modal-title").textContent=title; $("#modal-body").textContent=body;
+  modalCb=onYes; $("#modal").classList.add("show");
+}
+$("#modal-cancel").onclick=()=>$("#modal").classList.remove("show");
+$("#modal-confirm").onclick=()=>{ $("#modal").classList.remove("show"); if(modalCb) modalCb(); };
+
+/* ════════════ HOME ════════════ */
+let INVITE_CODE = null;
+(function initHome(){
+  $("#input-name").value = MYNAME;
+  const params = new URLSearchParams(location.search);
+  const pre = params.get("lobby");
+  if(pre){
+    INVITE_CODE = pre.toUpperCase();
+    $("#input-code").value = INVITE_CODE;
+    const banner=$("#invite-banner");
+    if(banner){ banner.innerHTML = `Sei stato invitato alla stanza <b>${esc(INVITE_CODE)}</b>. Inserisci il tuo nome e premi <b>Unisciti alla Partita</b>.`; banner.style.display="block"; }
+    // make Join the highlighted action when arriving from a link
+    $("#btn-join").classList.add("btn-primary"); $("#btn-join").classList.remove("btn-ghost");
+    $("#btn-create").classList.add("btn-ghost"); $("#btn-create").classList.remove("btn-primary");
+    setTimeout(()=>{ document.getElementById("gioca").scrollIntoView({behavior:"smooth"}); $("#input-name").focus(); }, 300);
+  }
+  refreshHomeButtons();
+})();
+
+/* name is mandatory: keep buttons disabled until a name is typed */
+function refreshHomeButtons(){
+  const hasName = $("#input-name").value.trim().length>0;
+  $("#btn-create").disabled = !hasName;
+  $("#btn-join").disabled   = !hasName;
+}
+$("#input-name").addEventListener("input", ()=>{ refreshHomeButtons(); if($("#input-name").value.trim()) $("#home-msg").textContent=""; });
+
+function readName(){
+  const n = $("#input-name").value.trim();
+  if(!n){ $("#home-msg").textContent="⚠️ Devi inserire il tuo nome per giocare."; $("#input-name").focus(); return null; }
+  MYNAME = n; localStorage.setItem("lupus_name", n); return n;
+}
+
+/* Reject if Firestore doesn't answer in time (e.g. database not created / offline) */
+function withTimeout(promise, ms, label){
+  return Promise.race([
+    promise,
+    new Promise((_,rej)=>setTimeout(()=>rej(new Error("__timeout__:"+label)), ms))
+  ]);
+}
+function friendlyErr(e){
+  const m = (e && (e.message||e.code||"")) + "";
+  if(m.includes("__timeout__") || m.includes("unavailable"))
+    return "Impossibile contattare il database. Apri la console Firebase, crea il database Firestore (Build → Firestore Database → Crea) e pubblica le regole, poi riprova.";
+  if(m.includes("permission-denied") || m.includes("Missing or insufficient permissions"))
+    return "Permesso negato dalle regole di sicurezza. Pubblica le regole Firestore incluse (firestore.rules) e riprova.";
+  return "Errore: " + m;
+}
+
+$("#btn-create").onclick = async ()=>{
+  if(!readName()) return;
+  // If the user arrived from an invite link, creating a new room is almost
+  // always a mistake (they end up alone as host). Steer them to Join.
+  const codeField = $("#input-code").value.trim().toUpperCase();
+  if(INVITE_CODE || codeField.length>=4){
+    confirmDialog("Vuoi creare una NUOVA stanza?",
+      "Hai un codice d'invito ("+(codeField||INVITE_CODE)+"). Per giocare con chi ti ha invitato devi premere \"Unisciti alla Partita\", non creare una nuova stanza. Creare una stanza nuova ti lascerà da solo. Procedo comunque a crearne una nuova?",
+      ()=>doCreate());
+    return;
+  }
+  doCreate();
+};
+async function doCreate(){
+  const b=$("#btn-create"); b.disabled=true;
+  $("#home-msg").textContent="Creazione stanza...";
+  try { await createLobby(); }
+  catch(e){ console.error(e); $("#home-msg").textContent=friendlyErr(e); }
+  finally { refreshHomeButtons(); }
+}
+$("#btn-join").onclick = async ()=>{
+  if(!readName()) return;
+  const c = $("#input-code").value.trim().toUpperCase();
+  if(c.length<4){ $("#home-msg").textContent="Inserisci il codice d'invito (5 caratteri) per unirti."; $("#input-code").focus(); return; }
+  const b=$("#btn-join"); b.disabled=true;
+  $("#home-msg").textContent="Ingresso...";
+  try { await joinLobby(c); }
+  catch(e){ console.error(e); $("#home-msg").textContent=friendlyErr(e); }
+  finally { refreshHomeButtons(); }
+};
+
+$("#hero-join")?.addEventListener("click", ()=>{ setTimeout(()=>{ const f=$("#input-name").value.trim()?$("#input-code"):$("#input-name"); f.focus(); }, 400); });
+
+async function createLobby(){
+  let c, exists=true, tries=0;
+  do { c=code5(); const snap=await withTimeout(getDoc(doc(db,"lobbies",c)),12000,"getDoc"); exists=snap.exists(); tries++; } while(exists && tries<6);
+  CODE=c; REF=doc(db,"lobbies",c);
+  await withTimeout(setDoc(REF,{
+    code:c, hostId:UID, narratorId:UID, hasNarrator:true,
+    status:"lobby", createdAt:Date.now(),
+    config: defaultConfig(),
+    players: { [UID]: { id:UID, name:MYNAME, isHost:true, alive:true, role:null } },
+    game: freshGame()
+  }),12000,"setDoc");
+  subscribe();
+}
+
+async function joinLobby(c){
+  REF=doc(db,"lobbies",c);
+  const snap=await withTimeout(getDoc(REF),12000,"getDoc");
+  if(!snap.exists()){ $("#home-msg").textContent="Stanza non trovata."; return; }
+  const d=snap.data();
+  if(d.status!=="lobby"){ $("#home-msg").textContent="La partita è già iniziata."; return; }
+  if(Object.keys(d.players||{}).length>=20){ $("#home-msg").textContent="Stanza piena (max 20)."; return; }
+  CODE=c;
+  await withTimeout(updateDoc(REF,{ ["players."+UID]: { id:UID, name:MYNAME, isHost:false, alive:true, role:null } }),12000,"updateDoc");
+  subscribe();
+}
+
+/* ════════════ REALTIME ════════════ */
+function subscribe(){
+  if(UNSUB) UNSUB();
+  KICKED=false;
+  UNSUB = onSnapshot(REF, snap=>{
+    if(!snap.exists()){
+      if(!KICKED){ toast("La stanza è stata chiusa."); }
+      leaveToHome(); return;
     }
-  }, { passive: true });
+    S = snap.data();
+    if(!S.players[UID] && !KICKED){
+      KICKED=true; toast("Sei stato espulso dalla stanza.");
+      leaveToHome(); return;
+    }
+    render();
+    runEngine();
+  }, err=>{ console.error(err); toast("Errore di connessione: "+err.code); });
+}
+
+function leaveToHome(){
+  if(UNSUB){ UNSUB(); UNSUB=null; }
+  REF=null; CODE=null; S=null;
+  $("#victory").classList.remove("show"); $("#victory").className="victory";
+  show("screen-home");
+  history.replaceState({}, "", location.pathname);
+}
+
+/* ════════════ ROLE HELPERS ════════════ */
+function controllerId(){ return S.hasNarrator ? S.narratorId : S.hostId; }
+function amController(){ return controllerId()===UID; }
+function amHost(){ return S.hostId===UID; }
+function amNarrator(){ return S.hasNarrator && S.narratorId===UID; }
+function myPlayer(){ return S.players[UID]; }
+function myRole(){ if(amNarrator()) return "narratore"; return myPlayer()?.role; }
+function participants(){
+  // players who actually hold a game role (exclude the narrator)
+  return Object.values(S.players).filter(p => !(S.hasNarrator && p.id===S.narratorId));
+}
+function alivePlayers(){ return participants().filter(p=>p.alive); }
+function playersWithRole(r){ return participants().filter(p=>p.role===r); }
+
+/* ════════════ RENDER ════════════ */
+function render(){
+  if(S.status==="lobby") { renderLobby(); show("screen-lobby"); }
+  else { renderGame(); show("screen-game"); if(S.status==="ended") showVictory(S.game.winner); else hideVictory(); }
+}
+
+/* ─────────── LOBBY ─────────── */
+function renderLobby(){
+  $("#lobby-code").textContent = S.code;
+  const ids = Object.keys(S.players);
+  $("#player-count").textContent = "("+ids.length+")";
+
+  // players
+  const ul = $("#lobby-players"); ul.innerHTML="";
+  ids.forEach(id=>{
+    const p=S.players[id];
+    const li=document.createElement("li"); li.className="player-row";
+    let badges="";
+    if(p.id===S.hostId) badges+=`<span class="badge host">Host</span>`;
+    if(S.hasNarrator && p.id===S.narratorId) badges+=`<span class="badge narr">Narratore</span>`;
+    if(p.id===UID) badges+=`<span class="badge you">Tu</span>`;
+    li.innerHTML=`<span class="dot"></span><span class="pname">${esc(p.name)}</span>${badges}`;
+    if(amHost() && p.id!==UID){
+      const k=document.createElement("button"); k.className="btn btn-danger btn-sm";
+      k.textContent="Espelli"; k.dataset.act="kick"; k.dataset.id=id;
+      li.appendChild(k);
+    }
+    ul.appendChild(li);
+  });
+
+  // config (editable for host, read-only for others)
+  const cfg=S.config;
+  $("#wolf-count").textContent = cfg.numLupi;
+  const host = amHost();
+  $("#config-hint").textContent = host
+    ? "Attiva o disattiva i ruoli speciali. Tutti i giocatori vedono la tua scelta in tempo reale."
+    : "L'host sta scegliendo i ruoli. Ecco la configurazione attuale:";
+
+  $$("#wolf-stepper button").forEach(b=>b.style.visibility = host?"visible":"hidden");
+
+  const cont = $("#role-config"); cont.innerHTML="";
+  const items = [
+    ["veggente", ROLES.veggente, 1],
+    ["medium",   ROLES.medium,   1],
+    ["guardia",  ROLES.guardia,  1],
+    ["gufo",     ROLES.gufo,     1],
+    ["prostituta",ROLES.prostituta,1],
+    ["criceto",  ROLES.criceto,  1],
+    ["massoni",  ROLES.massone,  2]
+  ];
+  items.forEach(([key,meta,count])=>{
+    const on = !!cfg[key];
+    const d=document.createElement("div");
+    d.className="role-toggle"+(on?" on":"")+(host?"":" locked");
+    if(host){ d.dataset.act="toggle-role"; d.dataset.key=key; }
+    const label = key==="massoni" ? "Massoni (×2)" : meta.name;
+    d.innerHTML=`<span class="emoji">${meta.emoji}</span>
+      <div class="meta"><b>${label}</b><small>${meta.desc.slice(0,46)}…</small></div>
+      <span class="check"></span>`;
+    cont.appendChild(d);
+  });
+
+  // summary
+  const need = roleCount(cfg);
+  const partCount = ids.length - (S.hasNarrator?1:0);
+  $("#config-summary").innerHTML =
+    `Ruoli speciali assegnati: <b>${need}</b> · Giocatori che ricevono un ruolo: <b>${partCount}</b> · Contadini: <b>${Math.max(0,partCount-need)}</b>`+
+    (need>partCount ? ` — <span style="color:var(--blood-light)">troppi ruoli per i giocatori presenti!</span>`:"");
+
+  // narrator controls
+  const nc=$("#narrator-controls"); nc.innerHTML="";
+  if(host){
+    if(S.hasNarrator){
+      const cur=S.players[S.narratorId];
+      nc.innerHTML=`<p class="mb">Narratore attuale: <b style="color:#7e9bd6">${esc(cur?cur.name:"—")}</b></p>`;
+      const sel=document.createElement("div"); sel.className="row";
+      const dd=document.createElement("select");
+      dd.style.cssText="flex:1;background:rgba(0,0,0,.35);border:1px solid var(--panel-line);color:var(--moon);padding:.7rem;font-family:'EB Garamond';border-radius:2px;";
+      ids.forEach(id=>{ const o=document.createElement("option"); o.value=id; o.textContent=S.players[id].name+(id===S.narratorId?" (attuale)":""); if(id===S.narratorId)o.selected=true; dd.appendChild(o); });
+      const b1=document.createElement("button"); b1.className="btn btn-ghost btn-sm"; b1.textContent="Assegna narratore"; b1.dataset.act="set-narrator"; b1.dataset.sel="1";
+      b1._dd=dd;
+      sel.appendChild(dd); sel.appendChild(b1); nc.appendChild(sel);
+      const b2=document.createElement("button"); b2.className="btn btn-danger btn-sm mt"; b2.textContent="✕ Rimuovi il narratore (moderazione automatica)"; b2.dataset.act="remove-narrator";
+      nc.appendChild(b2);
+    } else {
+      nc.innerHTML=`<p class="mb">Modalità <b style="color:#6ab04c">moderazione automatica</b> attiva: tutti giocano, il sistema gestisce le fasi e nessuno vede le carte altrui.</p>`;
+      const b=document.createElement("button"); b.className="btn btn-ghost btn-sm"; b.textContent="📖 Ripristina un narratore (sarai tu)"; b.dataset.act="restore-narrator";
+      nc.appendChild(b);
+    }
+  } else {
+    nc.innerHTML = S.hasNarrator
+      ? `<p>Narratore: <b style="color:#7e9bd6">${esc(S.players[S.narratorId]?.name||"—")}</b></p>`
+      : `<p>Moderazione <b style="color:#6ab04c">automatica</b>: tutti giocano, nessun narratore.</p>`;
+  }
+
+  // start button
+  const sb=$("#btn-start-game");
+  const canStart = (amController()) && partCount>=5 && cfg.numLupi>=1 && need<=partCount;
+  sb.disabled=!canStart;
+  sb.style.display = amController()?"inline-flex":"none";
+  $("#lobby-msg").textContent = amController()
+    ? (partCount<5 ? "Servono almeno 5 giocatori con un ruolo per iniziare." : "")
+    : "In attesa che "+(S.hasNarrator?"il narratore":"l'host")+" avvii la partita…";
+}
+
+function roleCount(cfg){
+  let n=cfg.numLupi;
+  ["veggente","medium","guardia","gufo","prostituta","criceto"].forEach(k=>{ if(cfg[k]) n++; });
+  if(cfg.massoni) n+=2;
+  return n;
+}
+
+/* ─────────── GAME ─────────── */
+function renderGame(){
+  const g=S.game;
+  // phase banner
+  const banner=$("#phase-banner");
+  banner.className="phase-banner";
+  let pl="", title="";
+  if(g.phase==="night"){ banner.classList.add("phase-night"); pl="Cala il silenzio"; title="🌙 La Notte"; }
+  else if(g.phase==="dawn"){ banner.classList.add("phase-day"); pl="Sorge l'alba"; title="🌅 L'Alba"; }
+  else if(g.phase==="day"){ banner.classList.add("phase-day"); pl="È giorno"; title="☀️ Discussione"; }
+  else if(g.phase==="vote"){ banner.classList.add("phase-vote"); pl="Il rogo attende"; title="🔥 Votazione"; }
+  else if(g.phase==="postvote"){ banner.classList.add("phase-vote"); pl="La folla ha deciso"; title="⚖️ Verdetto"; }
+  else if(g.phase==="ended"){ banner.classList.add("phase-day"); pl="La partita è finita"; title="🏁 Fine"; }
+  $("#phase-pl").textContent=pl; $("#phase-title").textContent=title;
+  $("#round-no").textContent = g.round?("Notte "+g.round):"";
+
+  renderMyCard();
+  renderController();
+  renderActionPanel();
+  renderDawn();
+  renderSidePlayers();
+  renderLog();
+  renderChat();
+}
+
+function renderMyCard(){
+  const host=$("#my-card-host");
+  const r=myRole();
+  const meta = ROLES[r] || ROLES.contadino;
+  const alive = amNarrator() ? true : myPlayer().alive;
+  let extra="";
+  // wolves see each other
+  if(r==="lupo"){
+    const pack=playersWithRole("lupo").filter(p=>p.id!==UID).map(p=>p.name);
+    extra = `<div class="rdesc">Il tuo branco: <b>${pack.length?pack.map(esc).join(", "):"sei l'unico lupo"}</b></div>`;
+  }
+  if(r==="massone"){
+    const m=playersWithRole("massone").filter(p=>p.id!==UID).map(p=>p.name);
+    extra = `<div class="rdesc">Compagni Massoni: <b>${m.length?m.map(esc).join(", "):"—"}</b></div>`;
+  }
+  host.innerHTML=`<div class="my-card">
+    <div class="emoji">${meta.emoji}</div>
+    <div class="rname">${meta.name}</div>
+    <div class="team team-${meta.team}">${TEAM_LABEL[meta.team]}${!alive?" · ELIMINATO":""}</div>
+    <div class="rdesc">${meta.desc}</div>
+    ${extra}
+  </div>`;
+}
+
+/* ── Controller (narrator OR host in auto mode) phase buttons ── */
+function renderController(){
+  const host=$("#controller-host"); host.innerHTML="";
+  if(!amController()) return;
+  const g=S.game;
+  const box=document.createElement("div"); box.className="controller-box";
+  let title = S.hasNarrator ? "📖 Controllo Narratore" : "🎛️ Gestione Partita";
+  let body="";
+
+  if(g.phase==="night"){
+    const pend=pendingNight();
+    body += `<p class="hint mb">${pend.length? "In attesa di: "+pend.join(", ") : "Tutti i ruoli hanno agito."}</p>`;
+    body += `<button class="btn btn-gold btn-block" data-act="resolve-night">Risolvi la Notte</button>`;
+  } else if(g.phase==="dawn"){
+    body += `<button class="btn btn-gold btn-block" data-act="to-day">Inizia il Giorno</button>`;
+  } else if(g.phase==="day"){
+    body += `<button class="btn btn-gold btn-block" data-act="open-vote">🔥 Apri la Votazione</button>`;
+  } else if(g.phase==="vote"){
+    const v=Object.keys(g.dayVotes||{}).length, tot=alivePlayers().length;
+    body += `<p class="hint mb">Voti espressi: ${v}/${tot}</p>`;
+    body += `<button class="btn btn-gold btn-block" data-act="resolve-vote">Risolvi la Votazione</button>`;
+  } else if(g.phase==="postvote"){
+    body += `<button class="btn btn-gold btn-block" data-act="next-night">🌙 Inizia la Notte successiva</button>`;
+  } else if(g.phase==="ended"){
+    body += `<button class="btn btn-gold btn-block" data-act="new-game">↻ Nuova Partita (stessa stanza)</button>`;
+  }
+  box.innerHTML=`<h3>${title}</h3>${body}`;
+  host.appendChild(box);
+}
+
+/* roles still expected to act this night */
+function pendingNight(){
+  const g=S.game, a=g.nightActions||{}, pend=[];
+  if(playersWithRole("guardia").some(p=>p.alive) && a.protect===undefined) pend.push("Guardia");
+  if(playersWithRole("prostituta").some(p=>p.alive) && a.prostitute===undefined) pend.push("Prostituta");
+  if(playersWithRole("veggente").some(p=>p.alive) && a.seer===undefined) pend.push("Veggente");
+  if(playersWithRole("gufo").some(p=>p.alive) && a.owl===undefined) pend.push("Gufo");
+  const wolvesAlive=playersWithRole("lupo").filter(p=>p.alive);
+  if(wolvesAlive.length){ const voted=Object.keys(a.wolves||{}).length; if(voted<wolvesAlive.length) pend.push("Lupi"); }
+  return pend;
+}
+
+/* ── Personal night/day action panel ── */
+function renderActionPanel(){
+  const host=$("#action-host"); host.innerHTML="";
+  if(amNarrator()) { renderNarratorView(host); return; }
+  const me=myPlayer(); if(!me.alive){ host.innerHTML=`<div class="action-box"><h3>Sei stato eliminato</h3><p class="sub">Osserva il resto della partita dal regno dei morti. Niente spoiler nella chat! 🤫</p></div>`; return; }
+  const g=S.game, r=me.role, a=g.nightActions||{};
+
+  if(g.phase==="night"){
+    const targets = alivePlayers().filter(p=>p.id!==UID);
+    if(r==="guardia"){
+      box(host,"🛡️ Chi proteggi stanotte?", "Non puoi proteggere chi hai già protetto la notte scorsa.",
+        targets, a.protect, "night-protect", g.prevProtect);
+      if(a.protect) host.querySelector(".action-box").innerHTML += res(`Proteggi <b>${esc(S.players[a.protect].name)}</b>.`);
+    }
+    else if(r==="prostituta"){
+      box(host,"🌹 Con chi passi la notte?", "Se uno dei due viene attaccato dai Lupi, sopravvivete entrambi.",
+        targets, a.prostitute, "night-prostitute");
+      if(a.prostitute) host.querySelector(".action-box").innerHTML += res(`Passi la notte con <b>${esc(S.players[a.prostitute].name)}</b>.`);
+    }
+    else if(r==="veggente"){
+      box(host,"🔮 Chi vuoi scrutare?", "Scoprirai subito se è un Lupo Mannaro.",
+        targets, a.seer, "night-seer");
+      if(a.seer){ const tr=S.players[a.seer].role;
+        let txt, wolf=false;
+        if(tr==="lupo"){ txt=`🐺 <b>${esc(S.players[a.seer].name)}</b> è un LUPO MANNARO!`; wolf=true; }
+        else if(tr==="criceto"){ txt=`🐹 Hai scrutato il Criceto Mannaro: è morto di spavento questa notte!`; wolf=true; }
+        else txt=`✓ <b>${esc(S.players[a.seer].name)}</b> NON è un lupo.`;
+        host.querySelector(".action-box").innerHTML += res(txt, wolf);
+      }
+    }
+    else if(r==="gufo"){
+      box(host,"🦉 Chi segnali?", "Domani sarà automaticamente tra i sospettati per il rogo.",
+        targets, a.owl, "night-owl");
+      if(a.owl) host.querySelector(".action-box").innerHTML += res(`Hai segnalato <b>${esc(S.players[a.owl].name)}</b>.`);
+    }
+    else if(r==="lupo"){
+      const wt = alivePlayers().filter(p=>p.role!=="lupo");
+      const my=(a.wolves||{})[UID];
+      box(host,"🐺 Chi sbranate stanotte?", "Mettiti d'accordo col branco. Conta il bersaglio più votato.",
+        wt, my, "night-wolf");
+      // show pack tally
+      const t=tally(Object.values(a.wolves||{}));
+      let lines = Object.keys(t).map(id=>`${esc(S.players[id].name)}: ${t[id]}`).join(" · ");
+      const ab=host.querySelector(".action-box");
+      if(lines) ab.innerHTML += res(`Voti del branco — ${lines}`);
+    }
+    else if(r==="medium"){
+      const ll=g.lastLynched;
+      let txt = !ll ? "Nessuno è stato mandato al rogo finora." :
+        (ll.role==="lupo" ? `🐺 Il linciato di ieri ERA un Lupo Mannaro.` : `✓ Il linciato di ieri NON era un lupo.`);
+      host.innerHTML=`<div class="action-box"><h3>👻 Visione del Medium</h3><p class="sub">Ascolti i morti…</p>${res(txt, ll&&ll.role==="lupo")}</div>`;
+    }
+    else { // contadino, criceto, massone
+      let msg = r==="criceto" ? "I Lupi non possono sbranarti, ma il Veggente è la tua rovina. Resta vivo fino alla fine!" :
+                "Non hai un'azione notturna. Dormi… e ascolta la notte.";
+      host.innerHTML=`<div class="action-box"><h3>${ROLES[r].emoji} Nessuna azione</h3><p class="sub">${msg}</p></div>`;
+    }
+  }
+  else if(g.phase==="dawn"){
+    host.innerHTML=`<div class="action-box"><h3>🌅 È l'alba</h3><p class="sub">Guarda la cronaca per scoprire cos'è successo stanotte.</p></div>`;
+  }
+  else if(g.phase==="day"){
+    host.innerHTML=`<div class="action-box"><h3>☀️ Discussione</h3><p class="sub">Parlate (in voce o di persona), accusate, difendetevi. Quando siete pronti, ${S.hasNarrator?"il narratore":"chi gestisce"} aprirà la votazione.</p>${owlNote()}</div>`;
+  }
+  else if(g.phase==="vote"){
+    const targets=alivePlayers();
+    const myv=(g.dayVotes||{})[UID];
+    box(host,"🔥 Chi mandi al rogo?", "I voti sono segreti. Si elimina il più votato.",
+        targets, myv, "day-vote");
+    if(myv) host.querySelector(".action-box").innerHTML += res(`Hai votato <b>${esc(S.players[myv].name)}</b>.`);
+    const ab=host.querySelector(".action-box"); ab.innerHTML += owlNote();
+  }
+  else if(g.phase==="postvote"){
+    const ll=g.lastLynched;
+    host.innerHTML=`<div class="action-box"><h3>⚖️ Verdetto</h3><p class="sub">${ll?`<b>${esc(playerName(ll.uid))}</b> è stato mandato al rogo. Il ruolo resta segreto…`:"Nessuno è stato eliminato (parità di voti)."}</p></div>`;
+  }
+}
+
+function owlNote(){
+  const m=S.game.owlMarked;
+  if(!m || !S.players[m] || !S.players[m].alive) return "";
+  return `<div class="result-line">🦉 Il Gufo ha segnalato <b>${esc(S.players[m].name)}</b> come sospetto.</div>`;
+}
+
+function box(host, h, sub, targets, selected, act, forbid){
+  const d=document.createElement("div"); d.className="action-box";
+  let grid = `<div class="target-grid">`;
+  targets.forEach(p=>{
+    const dis = forbid && p.id===forbid;
+    grid += `<button class="target-btn${selected===p.id?" selected":""}" data-act="${act}" data-id="${p.id}" ${dis?"disabled":""}>${esc(p.name)}${dis?" 🚫":""}</button>`;
+  });
+  grid+=`</div>`;
+  d.innerHTML=`<h3>${h}</h3><p class="sub">${sub}</p>${grid}`;
+  host.appendChild(d);
+}
+function res(txt, wolf){ return `<div class="result-line${wolf?" wolf":""}">${txt}</div>`; }
+
+/* narrator sees everything */
+function renderNarratorView(host){
+  const g=S.game;
+  if(g.phase!=="night" && g.phase!=="vote"){ return; }
+  const d=document.createElement("div"); d.className="action-box";
+  let html=`<h3>📖 Vista del Narratore — ${g.phase==="night"?"Azioni notturne":"Voti del rogo"}</h3><p class="sub">Solo tu vedi questo. Gestisci i tempi con i pulsanti dorati.</p>`;
+  if(g.phase==="night"){
+    const a=g.nightActions||{};
+    const line=(lbl,uid)=> `<div class="info-tag" style="display:block;margin:.2rem 0">${lbl}: ${uid?esc(playerName(uid)):"—"}</div>`;
+    html+= line("🛡️ Guardia protegge", a.protect);
+    html+= line("🌹 Prostituta con", a.prostitute);
+    html+= line("🔮 Veggente scruta", a.seer);
+    html+= line("🦉 Gufo segnala", a.owl);
+    const t=tally(Object.values(a.wolves||{})); const wl=Object.keys(t).map(id=>`${esc(playerName(id))} (${t[id]})`).join(", ");
+    html+= `<div class="info-tag" style="display:block;margin:.2rem 0">🐺 Bersaglio lupi: ${wl||"—"}</div>`;
+  } else {
+    const t=tally(Object.values(g.dayVotes||{}));
+    html+= Object.keys(t).map(id=>`<div class="info-tag" style="display:block;margin:.2rem 0">${esc(playerName(id))}: ${t[id]} voti</div>`).join("") || "<p class='hint'>Nessun voto ancora.</p>";
+  }
+  d.innerHTML=html; host.appendChild(d);
+}
+
+function renderDawn(){
+  const host=$("#dawn-host"); host.innerHTML="";
+  const g=S.game;
+  if((g.phase==="dawn"||g.phase==="day") && g.lastNight){
+    const ln=g.lastNight; const d=document.createElement("div"); d.className="action-box";
+    const showAnim = g.phase==="dawn";
+    let anim="";
+    let lines="";
+    if(ln.deaths && ln.deaths.length){
+      const wolfDeath = ln.deaths.some(x=>x.cause==="wolves");
+      const frightDeath = ln.deaths.some(x=>x.cause==="fright");
+      if(showAnim) anim = `<div class="dawn-anim death">
+        <div class="da-stage">
+          <span class="da-moon">🌑</span>
+          <span class="da-claw">🐺</span>
+          <span class="da-victim">${frightDeath&&!wolfDeath?"😱":"🩸"}</span>
+          <span class="da-slash"></span>
+        </div></div>`;
+      ln.deaths.forEach(x=>{ lines+= res(`☠️ <b>${esc(x.name)}</b> ${x.cause==="fright"?"è morto di spavento (scrutato dal Veggente)":"è stato sbranato dai Lupi"}.`, true); });
+    } else if(ln.blocked){
+      const rose = ln.blockCause==="prostitute";
+      if(showAnim) anim = `<div class="dawn-anim saved ${rose?"rose":"shield"}">
+        <div class="da-stage">
+          <span class="da-claw">🐺</span>
+          <span class="da-guard">${rose?"🌹":"🛡️"}</span>
+          <span class="da-spark"></span>
+        </div></div>`;
+      if(ln.blockCause==="guard") lines+= res(`🛡️ I Lupi hanno colpito, ma la <b>Guardia del Corpo</b> ha salvato la vittima!`);
+      else if(ln.blockCause==="prostitute") lines+= res(`🌹 I Lupi hanno colpito, ma la <b>Prostituta</b> ha protetto la vittima: entrambe salve!`);
+      else lines+= res(`🛡️ I Lupi hanno colpito, ma la vittima è sopravvissuta!`);
+    } else {
+      if(showAnim) anim = `<div class="dawn-anim peace"><div class="da-stage"><span class="da-sun">🌅</span></div></div>`;
+      lines= res(`☮️ L'alba sorge e… questa notte non è morto nessuno.`);
+    }
+    d.innerHTML=`<h3>🌅 Cronaca della Notte</h3>${anim}${lines}`;
+    host.appendChild(d);
+    // play the matching sound once per round for this client
+    playDawnSound(ln);
+  }
+}
+
+function renderSidePlayers(){
+  const host=$("#side-players"); host.innerHTML="";
+  const showRoles = amNarrator() || S.status==="ended";
+  Object.values(S.players).forEach(p=>{
+    if(S.hasNarrator && p.id===S.narratorId){
+      host.innerHTML += `<div class="mini-player"><span>📖 ${esc(p.name)}</span><span class="pr">Narratore</span></div>`;
+      return;
+    }
+    const dead = !p.alive;
+    let rl="";
+    if(showRoles && p.role) rl=`${ROLES[p.role].emoji} ${ROLES[p.role].name}`;
+    else if(p.id===UID && p.role) rl=`${ROLES[p.role].emoji}`;
+    host.innerHTML += `<div class="mini-player${dead?" dead":""}"><span>${esc(p.name)}${p.id===UID?" (tu)":""}</span><span class="pr">${rl}</span></div>`;
+  });
+}
+
+function renderLog(){
+  const host=$("#game-log"); host.innerHTML="";
+  (S.game.log||[]).slice(-30).forEach(e=>{
+    host.innerHTML += `<div class="log-entry ${e.kind||""}">${esc(e.text)}</div>`;
+  });
+  host.scrollTop=host.scrollHeight;
+}
+
+function renderChat(){
+  const host=$("#chat-msgs"); host.innerHTML="";
+  (S.game.chat||[]).slice(-60).forEach(m=>{
+    host.innerHTML += `<div class="chat-msg"><b>${esc(m.n)}:</b> ${esc(m.t)}</div>`;
+  });
+  host.scrollTop=host.scrollHeight;
+}
+
+/* ════════════ GAME ENGINE (controller only) ════════════ */
+let engineBusy=false;
+function runEngine(){
+  // auto-advance only in automatic-moderation mode, and only the controller writes
+  if(!amController() || engineBusy) return;
+  const g=S.game;
+  if(!S.hasNarrator && S.status==="playing" && g.phase==="night"){
+    if(pendingNight().length===0 && alivePlayers().length>0){
+      engineBusy=true; setTimeout(()=>{ doResolveNight().finally(()=>engineBusy=false); }, 700);
+    }
+  }
+}
+
+async function startGame(){
+  const parts = Object.keys(S.players).filter(id=> !(S.hasNarrator && id===S.narratorId));
+  if(parts.length<5){ toast("Servono almeno 5 giocatori (oltre al narratore) per iniziare."); return; }
+  const deck=[];
+  const c=S.config;
+  for(let i=0;i<c.numLupi;i++) deck.push("lupo");
+  ["veggente","medium","guardia","gufo","prostituta","criceto"].forEach(k=>{ if(c[k]) deck.push(k); });
+  if(c.massoni){ deck.push("massone"); deck.push("massone"); }
+  if(deck.length>parts.length){ toast("Troppi ruoli per i giocatori presenti."); return; }
+  while(deck.length<parts.length) deck.push("contadino");
+  shuffle(deck);
+  const updates={};
+  parts.forEach((id,i)=> updates["players."+id+".role"]=deck[i]);
+  if(S.hasNarrator) updates["players."+S.narratorId+".role"]=null;
+  Object.keys(S.players).forEach(id=> updates["players."+id+".alive"]=true);
+  const g=freshGame(); g.phase="night"; g.round=1;
+  g.log=[{text:"🌙 La partita ha inizio. Cala la prima notte sul villaggio.", kind:""}];
+  updates["status"]="playing"; updates["game"]=g;
+  await updateDoc(REF, updates);
+}
+
+async function doResolveNight(){
+  const g=clone(S.game), a=g.nightActions||{};
+  const players=clone(S.players);
+  const deaths=[]; let blocked=false, blockCause=null, blockedName=null;
+  // wolf victim
+  const wolfTarget = topKey(tally(Object.values(a.wolves||{})));
+  // prostitute pair
+  const prostP = playersWithRole("prostituta").find(p=>p.alive);
+  const prostUid = prostP?prostP.id:null;
+  const pair = a.prostitute ? [prostUid, a.prostitute] : [];
+  if(wolfTarget && players[wolfTarget] && players[wolfTarget].alive){
+    const role=players[wolfTarget].role;
+    if(role==="criceto"){ /* immune */ blocked=true; blockCause="criceto"; }
+    else if(a.protect===wolfTarget){ blocked=true; blockCause="guard"; blockedName=players[wolfTarget].name; }
+    else if(pair.includes(wolfTarget)){ blocked=true; blockCause="prostitute"; blockedName=players[wolfTarget].name; }
+    else { players[wolfTarget].alive=false; deaths.push({uid:wolfTarget, name:players[wolfTarget].name, cause:"wolves"}); }
+  }
+  // seer kills criceto
+  if(a.seer && players[a.seer] && players[a.seer].role==="criceto" && players[a.seer].alive){
+    players[a.seer].alive=false;
+    if(!deaths.find(d=>d.uid===a.seer)) deaths.push({uid:a.seer, name:players[a.seer].name, cause:"fright"});
+  }
+  g.lastNight={deaths, blocked, blockCause, blockedName};
+  g.owlMarked = a.owl || null;
+  g.prevProtect = a.protect || null;
+  // log
+  if(deaths.length) deaths.forEach(d=> g.log.push({text:`☠️ ${d.name} ${d.cause==="fright"?"è morto di spavento":"è stato sbranato"}.`, kind:"death"}));
+  else g.log.push({text:`☮️ Notte ${g.round}: nessuna vittima.`, kind:""});
+
+  const winner=evalWinner(players);
+  const updates={ players, "game.lastNight":g.lastNight, "game.owlMarked":g.owlMarked,
+                  "game.prevProtect":g.prevProtect, "game.log":g.log };
+  if(winner){ updates["status"]="ended"; updates["game.phase"]="ended"; updates["game.winner"]=winner;
+              updates["game.log"]=[...g.log,{text:winLogText(winner), kind:"day"}]; }
+  else updates["game.phase"]="dawn";
+  await updateDoc(REF, updates);
+}
+
+async function resolveVote(){
+  const g=clone(S.game);
+  const target=topKey(tally(Object.values(g.dayVotes||{})));
+  const players=clone(S.players);
+  let lynched=null;
+  // tie check: ensure unique max
+  const t=tally(Object.values(g.dayVotes||{}));
+  const max=Math.max(0,...Object.values(t));
+  const top=Object.keys(t).filter(k=>t[k]===max);
+  if(target && top.length===1 && players[target]){
+    players[target].alive=false; lynched={uid:target, role:players[target].role};
+    g.log.push({text:`🔥 ${players[target].name} è stato mandato al rogo.`, kind:"day"});
+  } else {
+    g.log.push({text:`⚖️ Voto in parità: nessuno è stato eliminato.`, kind:"day"});
+  }
+  const winner=evalWinner(players);
+  const updates={ players, "game.lastLynched":lynched, "game.log":g.log };
+  if(winner){ updates["status"]="ended"; updates["game.phase"]="ended"; updates["game.winner"]=winner;
+              updates["game.log"]=[...g.log,{text:winLogText(winner), kind:"day"}]; }
+  else updates["game.phase"]="postvote";
+  await updateDoc(REF, updates);
+}
+
+function evalWinner(players){
+  const parts=Object.values(players).filter(p=>p.role); // exclude narrator
+  const alive=parts.filter(p=>p.alive);
+  const wolves=alive.filter(p=>p.role==="lupo");
+  const nonWolves=alive.filter(p=>p.role!=="lupo");
+  const cricetoAlive=alive.some(p=>p.role==="criceto");
+  let base=null;
+  if(wolves.length===0) base="village";
+  else if(wolves.length>=nonWolves.length) base="wolves";
+  if(base && cricetoAlive) return "criceto";
+  return base;
+}
+function winLogText(w){ return w==="wolves"?"🐺 I LUPI hanno vinto.":w==="village"?"🌅 Il VILLAGGIO è salvo.":"🐹 Il CRICETO MANNARO trionfa!"; }
+
+/* ════════════ ACTION DISPATCH ════════════ */
+document.addEventListener("click", e=>{
+  const t=e.target.closest("[data-act]");
+  if(!t || !S) return;
+  const act=t.dataset.act, id=t.dataset.id;
+  switch(act){
+    /* lobby */
+    case "kick": {
+      const name=S.players[id]?.name||"questo giocatore";
+      confirmDialog("Espellere "+name+"?", "Verrà rimosso definitivamente dalla stanza.", ()=>{
+        updateDoc(REF,{ ["players."+id]: deleteField() });
+      }); break; }
+    case "toggle-role": {
+      if(!amHost()) return; const key=t.dataset.key;
+      updateDoc(REF,{ ["config."+key]: !S.config[key] }); break; }
+    case "wolf-plus": if(amHost()) updateDoc(REF,{ "config.numLupi": Math.min(8,S.config.numLupi+1) }); break;
+    case "wolf-minus": if(amHost()) updateDoc(REF,{ "config.numLupi": Math.max(1,S.config.numLupi-1) }); break;
+    case "set-narrator": { if(!amHost()) return; const dd=t._dd; const nid=dd.value;
+      updateDoc(REF,{ hasNarrator:true, narratorId:nid }); toast("Narratore aggiornato."); break; }
+    case "remove-narrator": if(amHost()) updateDoc(REF,{ hasNarrator:false, narratorId:null }); break;
+    case "restore-narrator": if(amHost()) updateDoc(REF,{ hasNarrator:true, narratorId:UID }); break;
+
+    /* night actions */
+    case "night-protect": updateDoc(REF,{ "game.nightActions.protect": id }); playRoleSound("guard"); toast("Protezione scelta."); break;
+    case "night-prostitute": updateDoc(REF,{ "game.nightActions.prostitute": id }); playRoleSound("prostitute"); toast("Notte trascorsa insieme."); break;
+    case "night-seer": if(S.game.nightActions?.seer===undefined){ updateDoc(REF,{ "game.nightActions.seer": id }); playRoleSound("seer"); } break;
+    case "night-owl": updateDoc(REF,{ "game.nightActions.owl": id }); playRoleSound("owl"); toast("Sospetto segnato."); break;
+    case "night-wolf": updateDoc(REF,{ ["game.nightActions.wolves."+UID]: id }); playRoleSound("wolf"); break;
+    case "day-vote": updateDoc(REF,{ ["game.dayVotes."+UID]: id }); playRoleSound("vote"); break;
+
+    /* controller phase control */
+    case "resolve-night": if(amController()) doResolveNight(); break;
+    case "to-day": if(amController()) updateDoc(REF,{ "game.phase":"day" }); break;
+    case "open-vote": if(amController()) updateDoc(REF,{ "game.phase":"vote", "game.dayVotes":{} }); break;
+    case "resolve-vote": if(amController()) resolveVote(); break;
+    case "next-night": if(amController()){
+        const round=(S.game.round||1)+1;
+        updateDoc(REF,{ "game.phase":"night", "game.round":round, "game.nightActions":{},
+                        "game.log": arrayUnion({text:"🌙 Cala la notte "+round+".", kind:""}) });
+      } break;
+    case "new-game": if(amController()){
+        const updates={ status:"lobby", game:freshGame() };
+        Object.keys(S.players).forEach(pid=> updates["players."+pid+".role"]=null);
+        Object.keys(S.players).forEach(pid=> updates["players."+pid+".alive"]=true);
+        updateDoc(REF, updates);
+      } break;
+  }
+});
+
+/* lobby buttons */
+$("#btn-copy-code").onclick=()=>{ navigator.clipboard?.writeText(S.code); toast("Codice copiato: "+S.code); };
+$("#btn-copy-link").onclick=()=>{ const url=location.origin+location.pathname+"?lobby="+S.code; navigator.clipboard?.writeText(url); toast("Link copiato!"); };
+$("#btn-start-game").onclick=()=>{ if(amController()) startGame(); };
+$("#btn-leave-lobby").onclick=leaveRoom;
+$("#btn-leave-game").onclick=()=>confirmDialog("Abbandonare la partita?","Tornerai alla schermata iniziale.", leaveRoom);
+
+function leaveRoom(){
+  if(!S){ leaveToHome(); return; }
+  if(amHost()){
+    confirmDialog("Sei l'host","Se esci la stanza verrà chiusa per tutti. Continuare?", async ()=>{
+      KICKED=true;
+      try{ await deleteDoc(REF); }catch(e){ console.error(e); }
+      leaveToHome();
+    });
+  } else {
+    confirmDialog("Uscire dalla stanza?","Potrai rientrare con il codice finché la partita non inizia.", async ()=>{
+      KICKED=true;
+      const updates={ ["players."+UID]: deleteField() };
+      // if I'm the narrator, hand the table back to auto-moderation so the game doesn't stall
+      if(S.hasNarrator && S.narratorId===UID){ updates.hasNarrator=false; updates.narratorId=null; }
+      try{ await updateDoc(REF, updates); }catch(e){ console.error(e); }
+      leaveToHome();
+    });
+  }
+}
+
+/* chat */
+function sendChat(){
+  const inp=$("#chat-input"); const txt=inp.value.trim(); if(!txt||!S) return;
+  inp.value="";
+  updateDoc(REF,{ "game.chat": arrayUnion({ n:MYNAME, t:txt, ts:Date.now() }) });
+}
+$("#chat-send").onclick=sendChat;
+$("#chat-input").addEventListener("keydown",e=>{ if(e.key==="Enter") sendChat(); });
+
+/* ════════════ VICTORY ANIMATIONS ════════════ */
+function showVictory(w){
+  const v=$("#victory");
+  if(v.dataset.shown===w){ v.classList.add("show"); return; }
+  v.dataset.shown=w;
+  v.innerHTML=""; v.className="victory show";
+  const isCtrl=amController();
+  const btn = `<div class="v-btn"><button class="btn ${w==='village'?'btn-gold':'btn-primary'}" data-act="${isCtrl?'new-game':''}" id="vic-btn">${isCtrl?"↻ Nuova Partita":"Resta nella stanza"}</button></div>`;
+
+  if(w==="wolves"){
+    v.classList.add("v-wolves");
+    v.innerHTML = `<div class="v-bloodmoon"></div>
+      ${dripsHTML()}
+      <div class="v-wolf-emoji">🐺</div>
+      <div class="v-title">I LUPI HANNO VINTO</div>
+      <div class="v-sub">Il villaggio è caduto. Ululati nella notte.</div>${btn}`;
+  } else if(w==="village"){
+    v.classList.add("v-village");
+    v.innerHTML = `<div class="v-sun"></div>${raysHTML()}
+      <div class="v-emoji">🌾🛡️</div>
+      <div class="v-title">IL VILLAGGIO È SALVO</div>
+      <div class="v-sub">L'ultimo lupo è caduto. Sorge l'alba sulla pace.</div>${btn}`;
+  } else if(w==="criceto"){
+    v.classList.add("v-criceto");
+    v.innerHTML = `${confettiHTML()}
+      <div class="v-hamster">🐹</div>
+      <div class="v-title">IL CRICETO TRIONFA!</div>
+      <div class="v-sub">Contro ogni previsione, il solitario ha rubato la vittoria.</div>${btn}`;
+  }
+  const vb=$("#vic-btn"); if(vb && isCtrl) vb.style.display="inline-flex"; else if(vb) vb.dataset.act="";
+}
+function hideVictory(){ const v=$("#victory"); v.classList.remove("show"); v.dataset.shown=""; }
+function dripsHTML(){ let h=""; for(let i=0;i<14;i++){ h+=`<div class="blood-drip" style="left:${rnd(100)}%; animation-delay:${(Math.random()*3).toFixed(2)}s; animation-duration:${(2+Math.random()*2).toFixed(2)}s;"></div>`; } return h; }
+function raysHTML(){ let h=""; for(let i=0;i<12;i++){ h+=`<div class="v-ray" style="transform:translateX(-50%) rotate(${(i-6)*14}deg); animation-delay:${(Math.random()).toFixed(2)}s;"></div>`; } return h; }
+function confettiHTML(){ const cols=["#D4A373","#C9A84C","#F4E8C1","#C41E3A","#6ab04c"]; let h=""; for(let i=0;i<60;i++){ h+=`<div class="confetti" style="left:${rnd(100)}%; background:${cols[rnd(cols.length)]}; animation-duration:${(2.5+Math.random()*3).toFixed(2)}s; animation-delay:${(Math.random()*2).toFixed(2)}s; transform:rotate(${rnd(360)}deg);"></div>`; } return h; }
+
+/* ════════════ UTIL ════════════ */
+function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function playerName(uid){ return S.players[uid]?.name || "?"; }
+
+window.addEventListener("beforeunload", ()=>{ /* best-effort presence cleanup skipped */ });
+
+/* ════════════ LANDING ANIMATIONS (reveal + moon parallax) ════════════ */
+(function landingFx(){
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add("visible"); });
+  }, { threshold:0.1, rootMargin:"0px 0px -50px 0px" });
+  $$("#screen-home .reveal").forEach(el=>io.observe(el));
+  // Safety: never leave reveal content invisible if observer misses it
+  setTimeout(()=>$$("#screen-home .reveal").forEach(el=>el.classList.add("visible")), 2500);
+
+  window.addEventListener("scroll", ()=>{
+    if(document.body.classList.contains("in-app")) return;
+    const moon = $("#screen-home .moon-circle");
+    if(moon) moon.style.transform = `translateY(${window.scrollY*0.3}px)`;
+  }, { passive:true });
+})();
 </script>
 </body>
 </html>
