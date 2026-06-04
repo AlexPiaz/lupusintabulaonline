@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lupus in Tabula — Online Multiplayer</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐺</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -255,9 +256,9 @@
   .play-card .panel-title { font-family:'Cinzel',serif; font-size:.68rem; letter-spacing:.3em; text-transform:uppercase; color:var(--blood-light); margin-bottom:1.4rem; text-align:center; }
   .play-divider { height:1px; background:rgba(244,232,193,.14); margin:1.6rem 0 1.4rem; }
 
-  footer { background:var(--shadow); border-top:1px solid rgba(139,0,0,0.2); padding:3rem 4rem; display:flex; align-items:center; justify-content:space-between; }
+  footer { background:var(--shadow); border-top:1px solid rgba(139,0,0,0.2); padding:3rem 4rem; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:1.5rem; }
   .footer-logo { font-family:'Cinzel Decorative',serif; font-size:0.9rem; color:var(--blood-light); letter-spacing:0.1em; }
-  .footer-copy { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.15em; color:rgba(244,232,193,0.3); text-align:center; }
+  .footer-copy { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.15em; color:rgba(244,232,193,0.3); text-align:center; line-height: 1.8; }
   .footer-links { display:flex; gap:1.5rem; list-style:none; }
   .footer-links a { font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color:rgba(244,232,193,0.4); text-decoration:none; transition:color 0.3s; }
   .footer-links a:hover { color:var(--blood-light); }
@@ -278,7 +279,6 @@
     .cards-grid { grid-template-columns:repeat(2,1fr); }
     .regole-grid { grid-template-columns:1fr; }
     .rules-aside { position:static; }
-    footer { flex-direction:column; gap:1.5rem; text-align:center; }
     .product-features { flex-wrap:wrap; gap:1.5rem; }
   }
   @media (max-width: 580px) {
@@ -299,6 +299,11 @@
   .card-narratore .role-card-bg { background:linear-gradient(160deg,#33290f 0%,#1e1709 40%,#0d0a04 100%); }
   .card-narratore .role-team { color:var(--gold); }
   .card-narratore:hover .role-border { border-color:rgba(201,168,76,0.4); }
+
+  /* center the lone Narratore card on the 3-column desktop grid */
+  @media (min-width: 901px) {
+    .card-narratore { grid-column: 2; }
+  }
 
   /* invite banner + form sub-labels */
   .invite-banner { background:rgba(196,30,58,.16); border:1px solid rgba(196,30,58,.5); color:var(--moon); font-size:.92rem; line-height:1.5; padding:.8rem 1rem; margin-bottom:1.3rem; border-radius:2px; }
@@ -359,7 +364,6 @@
     .regole-grid { gap:2.5rem; }
     .play-card { padding:1.6rem 1.2rem; }
     .stat-number { font-size:2rem; }
-    footer { padding:2rem 1.2rem; }
     /* in-app screens */
     #app-wrap { padding:1.2rem .9rem 4rem; }
     .code-display { flex-direction:column; align-items:stretch; gap:1rem; }
@@ -397,21 +401,21 @@
 
   .role-config { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:.7rem; }
   .role-toggle {
-    display:flex; align-items:center; gap:.7rem; padding:.7rem .9rem; border:1px solid var(--panel-line);
-    background: rgba(0,0,0,.25); border-radius:2px; cursor:pointer; transition:.2s;
+    display:flex; align-items:flex-start; gap:.7rem; padding:.7rem .9rem; border:1px solid var(--panel-line);
+    background: rgba(0,0,0,.25); border-radius:2px; cursor:pointer; transition:.2s; height: auto;
   }
   .role-toggle:hover { border-color: var(--blood-light); }
   .role-toggle.on { border-color: var(--blood-light); background: rgba(139,0,0,.14); }
   .role-toggle.locked { cursor:default; opacity:.85; }
-  .role-toggle .emoji { font-size:1.4rem; flex:none; }
+  .role-toggle .emoji { font-size:1.4rem; flex:none; margin-top: 0.1rem; }
   .role-toggle .meta { flex:1; }
   .role-toggle .meta b { font-family:'Cinzel',serif; font-size:.78rem; letter-spacing:.04em; }
-  .role-toggle .meta small { display:block; color:var(--moon-dark); font-size:.72rem; opacity:.8; }
-  .role-toggle .check { width:18px; height:18px; border:1px solid var(--moon-dark); border-radius:2px; flex:none; position:relative; }
+  .role-toggle .meta small { display:block; color:var(--moon-dark); font-size:.72rem; opacity:.9; margin-top:0.3rem; line-height: 1.4; white-space: normal; }
+  .role-toggle .check { width:18px; height:18px; border:1px solid var(--moon-dark); border-radius:2px; flex:none; position:relative; margin-top: 0.2rem;}
   .role-toggle.on .check { background:var(--blood-light); border-color:var(--blood-light); }
   .role-toggle.on .check::after { content:'✓'; position:absolute; inset:0; color:#000; font-size:.8rem; text-align:center; line-height:18px; }
 
-  .stepper { display:flex; align-items:center; gap:.6rem; }
+  .stepper { display:flex; align-items:center; gap:.6rem; margin-top: 0.2rem;}
   .stepper button { width:30px; height:30px; border:1px solid var(--panel-line); background:rgba(0,0,0,.3); color:var(--moon); cursor:pointer; font-size:1.1rem; border-radius:2px;}
   .stepper button:hover { border-color:var(--blood-light); }
   .stepper .val { font-family:'Cinzel Decorative',serif; font-size:1.3rem; min-width:24px; text-align:center; }
@@ -465,11 +469,21 @@
   .controller-box { border:1px solid var(--gold); background:rgba(201,168,76,.06); padding:1.2rem; margin-bottom:1rem; }
   .controller-box h3 { color:var(--gold); font-size:.8rem; letter-spacing:.1em; margin-bottom:.8rem; }
 
+  .ready-box { margin-bottom:1rem; }
+  .ready-cta { font-family:'Cinzel',serif; font-size:.7rem; letter-spacing:.12em; text-transform:uppercase; color:var(--moon-dark); text-align:center; padding:.7rem; opacity:.85; }
+  .ready-cta.done { color:#6ab04c; }
+  .ready-roster { margin-top:.8rem; }
+  .ready-label { font-family:'Cinzel',serif; font-size:.6rem; letter-spacing:.2em; text-transform:uppercase; color:var(--moon-dark); margin-bottom:.5rem; }
+  .ready-chips { display:flex; flex-wrap:wrap; gap:.35rem; }
+  .ready-chip { font-size:.85rem; padding:.18rem .55rem; border-radius:999px; border:1px solid var(--panel-line); white-space:nowrap; }
+  .ready-chip.ok   { color:#6ab04c; border-color:rgba(106,176,76,.5); background:rgba(106,176,76,.08); }
+  .ready-chip.wait { color:var(--moon-dark); opacity:.7; }
+
   .side-panel { border:1px solid var(--panel-line); background:rgba(0,0,0,.25); padding:1rem; }
   .side-panel h3 { font-size:.68rem; letter-spacing:.25em; text-transform:uppercase; color:var(--blood-light); margin-bottom:.7rem; }
   .mini-player { display:flex; align-items:center; gap:.5rem; padding:.35rem .4rem; font-size:.92rem; border-bottom:1px solid rgba(244,232,193,.05); }
   .mini-player.dead { opacity:.4; text-decoration:line-through; }
-  .mini-player .pr { margin-left:auto; font-size:.7rem; color:var(--moon-dark); }
+  .mini-player .pr { margin-left:auto; font-size:.7rem; color:var(--moon-dark); display:flex; align-items:center; }
 
   .log { max-height:240px; overflow-y:auto; display:flex; flex-direction:column; gap:.4rem; }
   .log-entry { font-size:.85rem; color:var(--moon-dark); padding:.4rem .5rem; border-left:2px solid var(--panel-line); }
@@ -567,7 +581,6 @@
 <body>
 <div class="app-bg"></div>
 
-<!-- ══════════ HOME / LANDING (full-bleed) ══════════ -->
 <div id="screen-home" class="screen active">
 
   <nav>
@@ -580,7 +593,6 @@
     </ul>
   </nav>
 
-  <!-- HERO -->
   <section class="hero">
     <div class="hero-bg"></div>
     <div class="moon-circle"></div>
@@ -602,7 +614,6 @@
     <div class="scroll-hint"><span>Scorri</span><div class="scroll-line"></div></div>
   </section>
 
-  <!-- ABOUT -->
   <section id="about">
     <div class="container">
       <div class="about-grid">
@@ -622,7 +633,6 @@
     </div>
   </section>
 
-  <!-- RUOLI -->
   <section id="ruoli">
     <div class="container">
       <div class="ruoli-header reveal">
@@ -645,7 +655,6 @@
     </div>
   </section>
 
-  <!-- REGOLE -->
   <section id="regole">
     <div class="container">
       <div class="regole-grid">
@@ -653,9 +662,9 @@
           <div class="reveal"><span class="section-label">Fasi di Gioco</span><h2 class="section-title">Come Funziona</h2></div>
           <ol class="phase-list">
             <li class="phase-item reveal"><span class="phase-number">I</span><div><div class="phase-title">Assegnazione Ruoli e Lobby</div><p class="phase-desc">L'host crea la partita e invita gli amici tramite link. Il sistema distribuisce casualmente e segretamente un ruolo a ciascun giocatore.</p></div></li>
-            <li class="phase-item reveal reveal-delay-1"><span class="phase-number">II</span><div><div class="phase-title">La Notte</div><p class="phase-desc">Gli schermi si oscurano. Si chiamano in ordine: Guardia, Veggente, Lupi e Medium. Il Criceto Mannaro spera di non essere spiato dal Veggente.</p></div></li>
-            <li class="phase-item reveal reveal-delay-2"><span class="phase-number">III</span><div><div class="phase-title">Il Giorno</div><p class="phase-desc">Arriva l'alba. Si annuncia chi è stato sbranato o morto di spavento. Tutti discutono e analizzano i sospetti per trovare i colpevoli.</p></div></li>
-            <li class="phase-item reveal reveal-delay-3"><span class="phase-number">IV</span><div><div class="phase-title">Il Voto e il Rogo</div><p class="phase-desc">Si vota chi mandare al rogo. Il più votato viene eliminato senza rivelare il proprio ruolo (a meno che non ci sia il Medium la notte successiva!).</p></div></li>
+            <li class="phase-item reveal reveal-delay-1"><span class="phase-number">II</span><div><div class="phase-title">La Notte</div><p class="phase-desc">La partita inizia in silenzio. I Lupi si accordano. Si chiamano in ordine i ruoli speciali. Il Criceto Mannaro spera di non essere spiato dal Veggente.</p></div></li>
+            <li class="phase-item reveal reveal-delay-2"><span class="phase-number">III</span><div><div class="phase-title">Il Giorno</div><p class="phase-desc">Arriva l'alba. Si annuncia chi è stato sbranato o morto di spavento. Il villaggio si sveglia, si discute per trovare i colpevoli tra le file contadine.</p></div></li>
+            <li class="phase-item reveal reveal-delay-3"><span class="phase-number">IV</span><div><div class="phase-title">Il Voto e il Rogo</div><p class="phase-desc">Si vota chi mandare al rogo. Il più votato viene eliminato senza rivelare il proprio ruolo. Si può anche decidere di non eliminare nessuno.</p></div></li>
             <li class="phase-item reveal reveal-delay-4"><span class="phase-number">V</span><div><div class="phase-title">Condizioni di Vittoria</div><p class="phase-desc"><strong>Villaggio:</strong> elimina tutti i Lupi.<br><strong>Lupi:</strong> pareggiano il numero dei Contadini.<br><strong>Criceto Mannaro:</strong> ruba la vittoria se è vivo quando si verifica una delle due!</p></div></li>
           </ol>
         </div>
@@ -672,7 +681,6 @@
     </div>
   </section>
 
-  <!-- GIOCA ONLINE (con form funzionante) -->
   <section id="gioca">
     <div class="gioca-inner container">
       <div class="blood-accent"></div>
@@ -710,10 +718,9 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-logo">Lupus in Tabula Online</div>
-    <p class="footer-copy">© 2026 ToroAlex</p>
+    <p class="footer-copy">© 2026 Toro Alex | Se ti è piaciuto questo sito prova: <a href="https://boardquestspecial.online/" target="_blank" style="color: var(--gold); text-decoration: underline;">https://boardquestspecial.online/</a> 🦆</p>
     <ul class="footer-links">
       <li><a href="#about">Il Gioco</a></li>
       <li><a href="#ruoli">Ruoli</a></li>
@@ -724,7 +731,6 @@
 
 <div class="wrap" id="app-wrap">
 
-  <!-- ══════════ LOBBY ══════════ -->
   <section id="screen-lobby" class="screen">
     <div class="center mb">
       <span class="eyebrow">— La stanza è aperta —</span>
@@ -778,7 +784,6 @@
     <p class="hint center mt" id="lobby-msg"></p>
   </section>
 
-  <!-- ══════════ GAME ══════════ -->
   <section id="screen-game" class="screen">
     <div class="phase-banner" id="phase-banner">
       <span class="round-no" id="round-no"></span>
@@ -792,13 +797,26 @@
         <div id="controller-host"></div>
         <div id="action-host"></div>
         <div id="dawn-host"></div>
+        <div id="ready-host"></div>
       </div>
 
       <aside>
+        <div class="side-panel mb" id="wolf-chat-panel" style="display:none; border:1px solid var(--blood); background:rgba(139,0,0,.08); padding:1rem;">
+          <h3 style="font-size:.68rem; letter-spacing:.25em; text-transform:uppercase; color:var(--blood-light); margin-bottom:.7rem;">🐺 Chat del Branco</h3>
+          <div class="chat">
+            <div class="chat-msgs" id="wolf-chat-msgs" style="max-height:150px; overflow-y:auto; display:flex; flex-direction:column; gap:.3rem;"></div>
+            <div class="chat-input" style="display:flex; gap:.4rem; margin-top:.8rem;">
+              <input type="text" id="wolf-chat-input" placeholder="Scrivi ai lupi..." maxlength="160" style="flex:1; padding:.5rem .7rem; background:rgba(0,0,0,.35); border:1px solid var(--panel-line); color:var(--moon); font-family:'EB Garamond',serif; font-size:1.05rem; border-radius:2px;">
+              <button class="btn btn-danger btn-sm" id="wolf-chat-send">Invia</button>
+            </div>
+          </div>
+        </div>
+
         <div class="side-panel mb">
           <h3>Il Villaggio</h3>
           <div id="side-players"></div>
         </div>
+
         <div class="side-panel">
           <h3>Cronaca</h3>
           <div class="log" id="game-log"></div>
@@ -820,7 +838,6 @@
 
 </div>
 
-<!-- MODAL -->
 <div class="modal-overlay" id="modal">
   <div class="modal">
     <h3 id="modal-title">Conferma</h3>
@@ -832,10 +849,8 @@
   </div>
 </div>
 
-<!-- VICTORY -->
 <div class="victory" id="victory"></div>
 
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script type="module">
@@ -871,7 +886,7 @@ function code5(){ const c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let s=""; for(let 
 
 /* ─── Role metadata ─── */
 const ROLES = {
-  narratore:  { name:"Narratore", team:"narr",    emoji:"📖", desc:"Sei il master. Non hai un ruolo: vedi tutte le carte e gestisci le fasi di notte e giorno." },
+  narratore:  { name:"Narratore", team:"narr",    emoji:"📖", desc:"Sei il master. Non hai un ruolo: vedi tutte le carte e gestisci le fasi di notte e giorno. Attento a non passare alla fase successiva se tutti i giocatori non hanno finito di votare!" },
   contadino:  { name:"Contadino", team:"village", emoji:"🌾", desc:"Nessun potere notturno. Di giorno usa logica e voto per smascherare i lupi." },
   lupo:       { name:"Lupo Mannaro", team:"wolf", emoji:"🐺", desc:"Di notte, insieme al branco, scegli chi sbranare. Di giorno fingi di essere innocente." },
   veggente:   { name:"Veggente", team:"village", emoji:"🔮", desc:"Ogni notte scruti un giocatore e scopri subito se è un Lupo. Se scruti il Criceto, lo uccidi di spavento." },
@@ -891,17 +906,20 @@ function defaultConfig(){
   return { numLupi:2, veggente:true, medium:true, guardia:true, gufo:false, prostituta:false, criceto:false, massoni:false };
 }
 function freshGame(){
-  return { phase:"lobby", round:0, nightActions:{}, dayVotes:{}, lastNight:null, lastLynched:null,
-           owlMarked:null, prevProtect:null, winner:null, log:[], chat:[] };
+  return { phase:"lobby", round:0, nightActions:{}, dayVotes:{}, ready:{}, lastNight:null, lastLynched:null,
+           owlMarked:null, prevProtect:null, winner:null, log:[], chat:[], wolfChat:[] };
 }
 
 /* ─── Identity ─── */
-let UID = localStorage.getItem("lupus_uid");
-if(!UID){ UID = "u_"+Math.random().toString(36).slice(2,11); localStorage.setItem("lupus_uid",UID); }
-let MYNAME = localStorage.getItem("lupus_name") || "";
+let UID = sessionStorage.getItem("lupus_uid");
+if(!UID){ UID = "u_"+Math.random().toString(36).slice(2,11); sessionStorage.setItem("lupus_uid",UID); }
+let MYNAME = sessionStorage.getItem("lupus_name") || "";
 
 /* ─── Live state ─── */
 let CODE = null, REF = null, UNSUB = null, S = null, KICKED=false;
+let lastWinner = null;
+let dismissedVictory = false;
+let victoryMusicPlayed = false;
 
 /* ════════════ SCREEN ROUTING ════════════ */
 function show(id){
@@ -939,6 +957,26 @@ function playRoleSound(kind){
     default:           beep(500,0.12,"sine",0.12);
   }
 }
+
+/* Jingle per Vittoria */
+function playVictoryMusic(team) {
+  if (team === "village") {
+    beep(523.25, 0.2, "sine", 0.15); // C5
+    setTimeout(() => beep(659.25, 0.2, "sine", 0.15), 200); // E5
+    setTimeout(() => beep(783.99, 0.2, "sine", 0.15), 400); // G5
+    setTimeout(() => beep(1046.50, 0.4, "sine", 0.15), 600); // C6
+  } else if (team === "wolves") {
+    beep(329.63, 0.3, "sawtooth", 0.15); // E4
+    setTimeout(() => beep(261.63, 0.3, "sawtooth", 0.15), 300); // C4
+    setTimeout(() => beep(164.81, 0.6, "sawtooth", 0.2), 600); // E3
+  } else if (team === "criceto") {
+    beep(880, 0.1, "square", 0.1);
+    setTimeout(() => beep(987.77, 0.1, "square", 0.1), 150);
+    setTimeout(() => beep(1046.50, 0.2, "square", 0.1), 300);
+    setTimeout(() => beep(880, 0.2, "square", 0.1), 450);
+  }
+}
+
 let _dawnSoundRound=-1;
 function playDawnSound(ln){
   const g=S.game; if(_dawnSoundRound===g.round) return; _dawnSoundRound=g.round;
@@ -960,21 +998,29 @@ function confirmDialog(title, body, onYes){
 $("#modal-cancel").onclick=()=>$("#modal").classList.remove("show");
 $("#modal-confirm").onclick=()=>{ $("#modal").classList.remove("show"); if(modalCb) modalCb(); };
 
-/* ════════════ HOME ════════════ */
+/* ════════════ HOME E RECONNECT ════════════ */
 let INVITE_CODE = null;
 (function initHome(){
   $("#input-name").value = MYNAME;
   const params = new URLSearchParams(location.search);
   const pre = params.get("lobby");
+  const savedRoom = sessionStorage.getItem("lupus_room");
+
   if(pre){
     INVITE_CODE = pre.toUpperCase();
     $("#input-code").value = INVITE_CODE;
     const banner=$("#invite-banner");
     if(banner){ banner.innerHTML = `Sei stato invitato alla stanza <b>${esc(INVITE_CODE)}</b>. Inserisci il tuo nome e premi <b>Unisciti alla Partita</b>.`; banner.style.display="block"; }
-    // make Join the highlighted action when arriving from a link
     $("#btn-join").classList.add("btn-primary"); $("#btn-join").classList.remove("btn-ghost");
     $("#btn-create").classList.add("btn-ghost"); $("#btn-create").classList.remove("btn-primary");
     setTimeout(()=>{ document.getElementById("gioca").scrollIntoView({behavior:"smooth"}); $("#input-name").focus(); }, 300);
+  } else if(savedRoom && MYNAME) {
+    // Autoreconnect
+    $("#input-code").value = savedRoom;
+    joinLobby(savedRoom).catch(e => {
+        sessionStorage.removeItem("lupus_room");
+        console.warn("Autoreconnect fallito:", e);
+    });
   }
   refreshHomeButtons();
 })();
@@ -990,7 +1036,7 @@ $("#input-name").addEventListener("input", ()=>{ refreshHomeButtons(); if($("#in
 function readName(){
   const n = $("#input-name").value.trim();
   if(!n){ $("#home-msg").textContent="⚠️ Devi inserire il tuo nome per giocare."; $("#input-name").focus(); return null; }
-  MYNAME = n; localStorage.setItem("lupus_name", n); return n;
+  MYNAME = n; sessionStorage.setItem("lupus_name", n); return n;
 }
 
 /* Reject if Firestore doesn't answer in time (e.g. database not created / offline) */
@@ -1011,8 +1057,6 @@ function friendlyErr(e){
 
 $("#btn-create").onclick = async ()=>{
   if(!readName()) return;
-  // If the user arrived from an invite link, creating a new room is almost
-  // always a mistake (they end up alone as host). Steer them to Join.
   const codeField = $("#input-code").value.trim().toUpperCase();
   if(INVITE_CODE || codeField.length>=4){
     confirmDialog("Vuoi creare una NUOVA stanza?",
@@ -1046,6 +1090,7 @@ async function createLobby(){
   let c, exists=true, tries=0;
   do { c=code5(); const snap=await withTimeout(getDoc(doc(db,"lobbies",c)),12000,"getDoc"); exists=snap.exists(); tries++; } while(exists && tries<6);
   CODE=c; REF=doc(db,"lobbies",c);
+  sessionStorage.setItem("lupus_room", c); // Salva stanza
   await withTimeout(setDoc(REF,{
     code:c, hostId:UID, narratorId:UID, hasNarrator:true,
     status:"lobby", createdAt:Date.now(),
@@ -1061,10 +1106,15 @@ async function joinLobby(c){
   const snap=await withTimeout(getDoc(REF),12000,"getDoc");
   if(!snap.exists()){ $("#home-msg").textContent="Stanza non trovata."; return; }
   const d=snap.data();
-  if(d.status!=="lobby"){ $("#home-msg").textContent="La partita è già iniziata."; return; }
-  if(Object.keys(d.players||{}).length>=20){ $("#home-msg").textContent="Stanza piena (max 20)."; return; }
+  if(d.status!=="lobby" && !d.players[UID]){ $("#home-msg").textContent="La partita è già iniziata."; return; }
+  if(Object.keys(d.players||{}).length>=20 && !d.players[UID]){ $("#home-msg").textContent="Stanza piena (max 20)."; return; }
   CODE=c;
-  await withTimeout(updateDoc(REF,{ ["players."+UID]: { id:UID, name:MYNAME, isHost:false, alive:true, role:null } }),12000,"updateDoc");
+  sessionStorage.setItem("lupus_room", c); // Salva stanza
+  if (!d.players[UID]) {
+    await withTimeout(updateDoc(REF,{ ["players."+UID]: { id:UID, name:MYNAME, isHost:false, alive:true, role:null } }),12000,"updateDoc");
+  } else {
+    await withTimeout(updateDoc(REF,{ ["players."+UID+".name"]: MYNAME }),12000,"updateDoc");
+  }
   subscribe();
 }
 
@@ -1090,6 +1140,7 @@ function subscribe(){
 function leaveToHome(){
   if(UNSUB){ UNSUB(); UNSUB=null; }
   REF=null; CODE=null; S=null;
+  sessionStorage.removeItem("lupus_room"); // Rimuovi memoria stanza
   $("#victory").classList.remove("show"); $("#victory").className="victory";
   show("screen-home");
   history.replaceState({}, "", location.pathname);
@@ -1111,8 +1162,25 @@ function playersWithRole(r){ return participants().filter(p=>p.role===r); }
 
 /* ════════════ RENDER ════════════ */
 function render(){
-  if(S.status==="lobby") { renderLobby(); show("screen-lobby"); }
-  else { renderGame(); show("screen-game"); if(S.status==="ended") showVictory(S.game.winner); else hideVictory(); }
+  // Update local caching variables for the victory screen flow
+  if (S.status === "playing") {
+     dismissedVictory = false;
+     lastWinner = null;
+     victoryMusicPlayed = false;
+  }
+  if (S.status === "ended" && S.game && S.game.winner) {
+     lastWinner = S.game.winner;
+  }
+
+  // If a winner exists locally and the user hasn't personally dismissed it
+  if (lastWinner && !dismissedVictory) {
+     show("screen-game");
+     showVictory(lastWinner);
+     return;
+  }
+
+  if(S.status==="lobby") { renderLobby(); show("screen-lobby"); hideVictory(); }
+  else { renderGame(); show("screen-game"); hideVictory(); }
 }
 
 /* ─────────── LOBBY ─────────── */
@@ -1166,7 +1234,7 @@ function renderLobby(){
     if(host){ d.dataset.act="toggle-role"; d.dataset.key=key; }
     const label = key==="massoni" ? "Massoni (×2)" : meta.name;
     d.innerHTML=`<span class="emoji">${meta.emoji}</span>
-      <div class="meta"><b>${label}</b><small>${meta.desc.slice(0,46)}…</small></div>
+      <div class="meta"><b>${label}</b><small>${meta.desc}</small></div>
       <span class="check"></span>`;
     cont.appendChild(d);
   });
@@ -1206,11 +1274,11 @@ function renderLobby(){
 
   // start button
   const sb=$("#btn-start-game");
-  const canStart = (amController()) && partCount>=5 && cfg.numLupi>=1 && need<=partCount;
+  const canStart = (amController()) && ids.length>=5 && cfg.numLupi>=1 && need<=partCount;
   sb.disabled=!canStart;
   sb.style.display = amController()?"inline-flex":"none";
   $("#lobby-msg").textContent = amController()
-    ? (partCount<5 ? "Servono almeno 5 giocatori con un ruolo per iniziare." : "")
+    ? (ids.length<5 ? "Servono almeno 5 giocatori in totale per iniziare." : (need>partCount ? "Troppi ruoli speciali per i giocatori presenti." : ""))
     : "In attesa che "+(S.hasNarrator?"il narratore":"l'host")+" avvii la partita…";
 }
 
@@ -1235,12 +1303,13 @@ function renderGame(){
   else if(g.phase==="postvote"){ banner.classList.add("phase-vote"); pl="La folla ha deciso"; title="⚖️ Verdetto"; }
   else if(g.phase==="ended"){ banner.classList.add("phase-day"); pl="La partita è finita"; title="🏁 Fine"; }
   $("#phase-pl").textContent=pl; $("#phase-title").textContent=title;
-  $("#round-no").textContent = g.round?("Notte "+g.round):"";
+  $("#round-no").textContent = g.round?("Giorno/Notte "+g.round):"";
 
   renderMyCard();
   renderController();
   renderActionPanel();
   renderDawn();
+  renderReady();
   renderSidePlayers();
   renderLog();
   renderChat();
@@ -1275,29 +1344,120 @@ function renderController(){
   const host=$("#controller-host"); host.innerHTML="";
   if(!amController()) return;
   const g=S.game;
+
+  // ── AUTOMATIC MODE (no narrator): no manual controls. The engine advances
+  //    each phase by itself, but ONLY once everyone is ready/has voted. ──
+  if(!S.hasNarrator){
+    if(g.phase==="ended") return;
+    const box=document.createElement("div"); box.className="controller-box";
+    box.innerHTML=`<h3>🎛️ Moderazione automatica</h3><p class="hint">La partita avanza da sola quando tutti hanno ${g.phase==="night"?"completato le azioni notturne":g.phase==="vote"?"votato":"premuto «Continua»"}. Nessun intervento richiesto.</p>`;
+    host.appendChild(box);
+    return;
+  }
+
+  // ── NARRATOR MODE: buttons stay disabled until everyone is ready/has voted ──
   const box=document.createElement("div"); box.className="controller-box";
-  let title = S.hasNarrator ? "📖 Controllo Narratore" : "🎛️ Gestione Partita";
+  let title = "📖 Controllo Narratore";
   let body="";
 
   if(g.phase==="night"){
-    const pend=pendingNight();
-    body += `<p class="hint mb">${pend.length? "In attesa di: "+pend.join(", ") : "Tutti i ruoli hanno agito."}</p>`;
-    body += `<button class="btn btn-gold btn-block" data-act="resolve-night">Risolvi la Notte</button>`;
+    const pend=pendingNight(); const ok=pend.length===0;
+    body += `<p class="hint mb">${ok ? "Tutti i ruoli hanno agito." : "In attesa di: "+pend.join(", ")}</p>`;
+    body += `<button class="btn btn-gold btn-block" data-act="resolve-night" ${ok?"":"disabled"}>Risolvi la Notte</button>`;
   } else if(g.phase==="dawn"){
-    body += `<button class="btn btn-gold btn-block" data-act="to-day">Inizia il Giorno</button>`;
+    const r=readyGate();
+    body += readyHintHTML(r);
+    body += `<button class="btn btn-gold btn-block" data-act="to-day" ${r.allReady?"":"disabled"}>Inizia il Giorno</button>`;
   } else if(g.phase==="day"){
-    body += `<button class="btn btn-gold btn-block" data-act="open-vote">🔥 Apri la Votazione</button>`;
+    const r=readyGate();
+    body += readyHintHTML(r);
+    body += `<button class="btn btn-gold btn-block" data-act="open-vote" ${r.allReady?"":"disabled"}>🔥 Apri la Votazione</button>`;
   } else if(g.phase==="vote"){
-    const v=Object.keys(g.dayVotes||{}).length, tot=alivePlayers().length;
-    body += `<p class="hint mb">Voti espressi: ${v}/${tot}</p>`;
-    body += `<button class="btn btn-gold btn-block" data-act="resolve-vote">Risolvi la Votazione</button>`;
+    const r=readyGate();
+    body += `<p class="hint mb">Hanno votato: ${r.done.length}/${r.total}${r.pending.length?" — manca: "+r.pending.map(p=>esc(p.name)).join(", "):""}</p>`;
+    body += `<button class="btn btn-gold btn-block" data-act="resolve-vote" ${r.allReady?"":"disabled"}>Risolvi la Votazione</button>`;
   } else if(g.phase==="postvote"){
-    body += `<button class="btn btn-gold btn-block" data-act="next-night">🌙 Inizia la Notte successiva</button>`;
+    const r=readyGate();
+    body += readyHintHTML(r);
+    body += `<button class="btn btn-gold btn-block" data-act="next-night" ${r.allReady?"":"disabled"}>🌙 Inizia la Notte</button>`;
   } else if(g.phase==="ended"){
-    body += `<button class="btn btn-gold btn-block" data-act="new-game">↻ Nuova Partita (stessa stanza)</button>`;
+    // Il pulsante nella schermata di vittoria gestisce il ritorno alla lobby
   }
-  box.innerHTML=`<h3>${title}</h3>${body}`;
-  host.appendChild(box);
+  if (body) {
+    box.innerHTML=`<h3>${title}</h3>${body}`;
+    host.appendChild(box);
+  }
+}
+
+function readyHintHTML(r){
+  if(!r) return "";
+  if(r.allReady) return `<p class="hint mb">Tutti pronti (${r.done.length}/${r.total}).</p>`;
+  return `<p class="hint mb">Pronti: ${r.done.length}/${r.total} — in attesa di: ${r.pending.map(p=>esc(p.name)).join(", ")}</p>`;
+}
+
+/* ── Readiness gate for the current phase ──
+   Required set = alive participants (narrator and dead are excluded).
+   - vote phase  → "ready" = has cast a vote (game.dayVotes)
+   - dawn/day/postvote → "ready" = has pressed Continua (game.ready)
+   Returns null for night (handled via pendingNight()). */
+function readyGate(){
+  const g=S.game;
+  const alive=alivePlayers();
+  if(g.phase==="vote"){
+    const v=g.dayVotes||{};
+    const done=alive.filter(p=>v[p.id]!==undefined).map(p=>p.id);
+    const pending=alive.filter(p=>v[p.id]===undefined);
+    return { kind:"vote", done, pending, total:alive.length, allReady: alive.length>0 && pending.length===0 };
+  }
+  if(g.phase==="dawn" || g.phase==="day" || g.phase==="postvote"){
+    const rd=g.ready||{};
+    const done=alive.filter(p=>rd[p.id]).map(p=>p.id);
+    const pending=alive.filter(p=>!rd[p.id]);
+    return { kind:"continue", done, pending, total:alive.length, allReady: alive.length>0 && pending.length===0 };
+  }
+  return null;
+}
+
+/* ── "Continua" button + who's-ready roster shown to every player ── */
+function renderReady(){
+  const host=$("#ready-host"); host.innerHTML="";
+  const g=S.game;
+  const r=readyGate();
+  if(!r) return; // night or ended → nothing here
+
+  if(amNarrator()){
+    // narrator is not a participant: just show the roster
+    host.innerHTML=`<div class="action-box ready-box">${rosterHTML(r)}</div>`;
+    return;
+  }
+  const me=myPlayer(); if(!me) return;
+
+  let html="";
+  if(me.alive){
+    if(r.kind==="continue"){
+      const iReady=(g.ready||{})[UID];
+      html += iReady
+        ? `<div class="ready-cta done">✓ Sei pronto — in attesa degli altri…</div>`
+        : `<button class="btn btn-gold btn-block" data-act="ready-continue">Continua ▶</button>`;
+    } else if(r.kind==="vote"){
+      const iVoted=(g.dayVotes||{})[UID]!==undefined;
+      if(!iVoted) html += `<div class="ready-cta">Esprimi il tuo voto qui sopra per continuare…</div>`;
+      else html += `<div class="ready-cta done">✓ Hai votato — in attesa degli altri…</div>`;
+    }
+  } else {
+    html += `<div class="ready-cta">Sei eliminato: la partita prosegue con i vivi.</div>`;
+  }
+  html += rosterHTML(r);
+  host.innerHTML=`<div class="action-box ready-box">${html}</div>`;
+}
+
+function rosterHTML(r){
+  const chip=(name,ok)=>`<span class="ready-chip ${ok?'ok':'wait'}">${ok?'✓':'⏳'} ${esc(name)}</span>`;
+  let chips="";
+  r.done.forEach(uid=> chips+=chip(playerName(uid),true));
+  r.pending.forEach(p=> chips+=chip(p.name,false));
+  const lbl = r.kind==="vote" ? `Hanno votato ${r.done.length}/${r.total}` : `Pronti ${r.done.length}/${r.total}`;
+  return `<div class="ready-roster"><div class="ready-label">${lbl}</div><div class="ready-chips">${chips}</div></div>`;
 }
 
 /* roles still expected to act this night */
@@ -1371,22 +1531,23 @@ function renderActionPanel(){
     }
   }
   else if(g.phase==="dawn"){
-    host.innerHTML=`<div class="action-box"><h3>🌅 È l'alba</h3><p class="sub">Guarda la cronaca per scoprire cos'è successo stanotte.</p></div>`;
+    host.innerHTML=`<div class="action-box"><h3>🌅 È l'alba</h3><p class="sub">Guarda la cronaca per scoprire cos'è successo stanotte. Quando hai letto, premi <b>«Continua»</b> per passare al giorno.</p></div>`;
   }
   else if(g.phase==="day"){
-    host.innerHTML=`<div class="action-box"><h3>☀️ Discussione</h3><p class="sub">Parlate (in voce o di persona), accusate, difendetevi. Quando siete pronti, ${S.hasNarrator?"il narratore":"chi gestisce"} aprirà la votazione.</p>${owlNote()}</div>`;
+    host.innerHTML=`<div class="action-box"><h3>☀️ Discussione</h3><p class="sub">Parlate (in voce o di persona), accusate, difendetevi. Quando sei pronto a votare, premi <b>«Continua»</b> qui sotto: ${S.hasNarrator?"il narratore aprirà la votazione appena tutti saranno pronti":"la votazione si aprirà da sola appena tutti saranno pronti"}.</p>${owlNote()}</div>`;
   }
   else if(g.phase==="vote"){
-    const targets=alivePlayers();
+    // Aggiungo "Nessuno" in fondo alla lista per il salto del voto
+    const targets = [...alivePlayers(), { id: "nessuno", name: "Nessuno (Salta voto)" }];
     const myv=(g.dayVotes||{})[UID];
-    box(host,"🔥 Chi mandi al rogo?", "I voti sono segreti. Si elimina il più votato.",
+    box(host,"🔥 Chi mandi al rogo?", "I voti sono segreti. Si elimina il più votato. Puoi anche scegliere di non eliminare nessuno.",
         targets, myv, "day-vote");
-    if(myv) host.querySelector(".action-box").innerHTML += res(`Hai votato <b>${esc(S.players[myv].name)}</b>.`);
+    if(myv) host.querySelector(".action-box").innerHTML += res(`Hai votato <b>${myv==="nessuno"?"Nessuno":esc(S.players[myv].name)}</b>.`);
     const ab=host.querySelector(".action-box"); ab.innerHTML += owlNote();
   }
   else if(g.phase==="postvote"){
     const ll=g.lastLynched;
-    host.innerHTML=`<div class="action-box"><h3>⚖️ Verdetto</h3><p class="sub">${ll?`<b>${esc(playerName(ll.uid))}</b> è stato mandato al rogo. Il ruolo resta segreto…`:"Nessuno è stato eliminato (parità di voti)."}</p></div>`;
+    host.innerHTML=`<div class="action-box"><h3>⚖️ Verdetto</h3><p class="sub">${ll?`<b>${esc(playerName(ll.uid))}</b> è stato mandato al rogo. Il ruolo resta segreto…`:"Nessuno è stato eliminato."} Premi <b>«Continua»</b> per affrontare la prossima notte.</p></div>`;
   }
 }
 
@@ -1475,16 +1636,21 @@ function renderDawn(){
 function renderSidePlayers(){
   const host=$("#side-players"); host.innerHTML="";
   const showRoles = amNarrator() || S.status==="ended";
+  const amIHost = amHost();
   Object.values(S.players).forEach(p=>{
     if(S.hasNarrator && p.id===S.narratorId){
-      host.innerHTML += `<div class="mini-player"><span>📖 ${esc(p.name)}</span><span class="pr">Narratore</span></div>`;
+      let kBtn = (amIHost && p.id!==UID && S.status==="playing") ? `<button class="btn btn-danger btn-sm" style="padding:.1rem .3rem; font-size:.6rem; margin-left:.5rem;" data-act="kick" data-id="${p.id}">Espelli</button>` : "";
+      host.innerHTML += `<div class="mini-player"><span>📖 ${esc(p.name)}</span><span class="pr" style="display:flex; align-items:center;">Narratore${kBtn}</span></div>`;
       return;
     }
     const dead = !p.alive;
     let rl="";
     if(showRoles && p.role) rl=`${ROLES[p.role].emoji} ${ROLES[p.role].name}`;
     else if(p.id===UID && p.role) rl=`${ROLES[p.role].emoji}`;
-    host.innerHTML += `<div class="mini-player${dead?" dead":""}"><span>${esc(p.name)}${p.id===UID?" (tu)":""}</span><span class="pr">${rl}</span></div>`;
+    
+    let kBtn = (amIHost && p.id!==UID && S.status==="playing") ? `<button class="btn btn-danger btn-sm" style="padding:.1rem .3rem; font-size:.6rem; margin-left:.5rem;" data-act="kick" data-id="${p.id}">Espelli</button>` : "";
+    
+    host.innerHTML += `<div class="mini-player${dead?" dead":""}"><span>${esc(p.name)}${p.id===UID?" (tu)":""}</span><span class="pr" style="display:flex; align-items:center;">${rl}${kBtn}</span></div>`;
   });
 }
 
@@ -1497,29 +1663,65 @@ function renderLog(){
 }
 
 function renderChat(){
+  // Main chat
   const host=$("#chat-msgs"); host.innerHTML="";
   (S.game.chat||[]).slice(-60).forEach(m=>{
     host.innerHTML += `<div class="chat-msg"><b>${esc(m.n)}:</b> ${esc(m.t)}</div>`;
   });
   host.scrollTop=host.scrollHeight;
-}
 
-/* ════════════ GAME ENGINE (controller only) ════════════ */
-let engineBusy=false;
-function runEngine(){
-  // auto-advance only in automatic-moderation mode, and only the controller writes
-  if(!amController() || engineBusy) return;
-  const g=S.game;
-  if(!S.hasNarrator && S.status==="playing" && g.phase==="night"){
-    if(pendingNight().length===0 && alivePlayers().length>0){
-      engineBusy=true; setTimeout(()=>{ doResolveNight().finally(()=>engineBusy=false); }, 700);
+  // Wolf chat visibile solo a Lupi e Narratore
+  const wPanel = $("#wolf-chat-panel");
+  if (wPanel) {
+    if (myRole() === "lupo" || amNarrator()) {
+      wPanel.style.display = "block";
+      const wMsgs = $("#wolf-chat-msgs");
+      wMsgs.innerHTML = "";
+      (S.game.wolfChat||[]).slice(-60).forEach(m=>{
+        wMsgs.innerHTML += `<div class="chat-msg" style="font-size:.88rem; color:#e08aa8;"><b style="color:var(--blood-light);">${esc(m.n)}:</b> ${esc(m.t)}</div>`;
+      });
+      wMsgs.scrollTop = wMsgs.scrollHeight;
+    } else {
+      wPanel.style.display = "none";
     }
   }
 }
 
+/* ════════════ GAME ENGINE (controller only) ════════════ */
+let engineBusy=false;
+function schedule(fn){
+  engineBusy=true;
+  setTimeout(()=>{ Promise.resolve(fn()).catch(e=>console.error(e)).finally(()=>{ engineBusy=false; }); }, 700);
+}
+function runEngine(){
+  // Auto-advance runs ONLY in automatic-moderation mode (no narrator),
+  // and only on the controller's client. Each phase advances by itself,
+  // but only once its readiness gate is satisfied (everyone ready / voted).
+  if(!amController() || engineBusy) return;
+  if(S.hasNarrator || S.status!=="playing") return;
+  const g=S.game;
+  if(g.phase==="night"){
+    if(pendingNight().length===0 && alivePlayers().length>0) schedule(doResolveNight);
+    return;
+  }
+  const r=readyGate();
+  if(!r || !r.allReady) return;
+  if(g.phase==="dawn")      schedule(()=> updateDoc(REF,{ "game.phase":"day", "game.ready":{} }));
+  else if(g.phase==="day")  schedule(()=> updateDoc(REF,{ "game.phase":"vote", "game.dayVotes":{}, "game.ready":{} }));
+  else if(g.phase==="vote") schedule(resolveVote);
+  else if(g.phase==="postvote") schedule(nextNight);
+}
+
+function nextNight(){
+  const round=(S.game.round||1)+1;
+  return updateDoc(REF,{ "game.phase":"night", "game.round":round, "game.nightActions":{}, "game.ready":{},
+                         "game.log": arrayUnion({text:"🌙 Cala la notte "+round+".", kind:""}) });
+}
+
 async function startGame(){
-  const parts = Object.keys(S.players).filter(id=> !(S.hasNarrator && id===S.narratorId));
-  if(parts.length<5){ toast("Servono almeno 5 giocatori (oltre al narratore) per iniziare."); return; }
+  const allIds = Object.keys(S.players);
+  const parts = allIds.filter(id=> !(S.hasNarrator && id===S.narratorId));
+  if(allIds.length<5){ toast("Servono almeno 5 giocatori totali nella stanza per iniziare."); return; }
   const deck=[];
   const c=S.config;
   for(let i=0;i<c.numLupi;i++) deck.push("lupo");
@@ -1532,7 +1734,7 @@ async function startGame(){
   parts.forEach((id,i)=> updates["players."+id+".role"]=deck[i]);
   if(S.hasNarrator) updates["players."+S.narratorId+".role"]=null;
   Object.keys(S.players).forEach(id=> updates["players."+id+".alive"]=true);
-  const g=freshGame(); g.phase="night"; g.round=1;
+  const g=freshGame(); g.phase="night"; g.round=1; // INIZIO DALLA NOTTE COME RICHIESTO
   g.log=[{text:"🌙 La partita ha inizio. Cala la prima notte sul villaggio.", kind:""}];
   updates["status"]="playing"; updates["game"]=g;
   await updateDoc(REF, updates);
@@ -1569,7 +1771,7 @@ async function doResolveNight(){
 
   const winner=evalWinner(players);
   const updates={ players, "game.lastNight":g.lastNight, "game.owlMarked":g.owlMarked,
-                  "game.prevProtect":g.prevProtect, "game.log":g.log };
+                  "game.prevProtect":g.prevProtect, "game.log":g.log, "game.ready":{} };
   if(winner){ updates["status"]="ended"; updates["game.phase"]="ended"; updates["game.winner"]=winner;
               updates["game.log"]=[...g.log,{text:winLogText(winner), kind:"day"}]; }
   else updates["game.phase"]="dawn";
@@ -1585,14 +1787,18 @@ async function resolveVote(){
   const t=tally(Object.values(g.dayVotes||{}));
   const max=Math.max(0,...Object.values(t));
   const top=Object.keys(t).filter(k=>t[k]===max);
-  if(target && top.length===1 && players[target]){
-    players[target].alive=false; lynched={uid:target, role:players[target].role};
-    g.log.push({text:`🔥 ${players[target].name} è stato mandato al rogo.`, kind:"day"});
+  if(target && top.length===1){
+    if (target === "nessuno") {
+      g.log.push({text:`🕊️ La maggioranza ha scelto di non mandare nessuno al rogo.`, kind:"day"});
+    } else if (players[target]) {
+      players[target].alive=false; lynched={uid:target, role:players[target].role};
+      g.log.push({text:`🔥 ${players[target].name} è stato mandato al rogo.`, kind:"day"});
+    }
   } else {
     g.log.push({text:`⚖️ Voto in parità: nessuno è stato eliminato.`, kind:"day"});
   }
   const winner=evalWinner(players);
-  const updates={ players, "game.lastLynched":lynched, "game.log":g.log };
+  const updates={ players, "game.lastLynched":lynched, "game.log":g.log, "game.ready":{} };
   if(winner){ updates["status"]="ended"; updates["game.phase"]="ended"; updates["game.winner"]=winner;
               updates["game.log"]=[...g.log,{text:winLogText(winner), kind:"day"}]; }
   else updates["game.phase"]="postvote";
@@ -1619,7 +1825,7 @@ document.addEventListener("click", e=>{
   if(!t || !S) return;
   const act=t.dataset.act, id=t.dataset.id;
   switch(act){
-    /* lobby */
+    /* lobby & in-game */
     case "kick": {
       const name=S.players[id]?.name||"questo giocatore";
       confirmDialog("Espellere "+name+"?", "Verrà rimosso definitivamente dalla stanza.", ()=>{
@@ -1643,22 +1849,17 @@ document.addEventListener("click", e=>{
     case "night-wolf": updateDoc(REF,{ ["game.nightActions.wolves."+UID]: id }); playRoleSound("wolf"); break;
     case "day-vote": updateDoc(REF,{ ["game.dayVotes."+UID]: id }); playRoleSound("vote"); break;
 
-    /* controller phase control */
-    case "resolve-night": if(amController()) doResolveNight(); break;
-    case "to-day": if(amController()) updateDoc(REF,{ "game.phase":"day" }); break;
-    case "open-vote": if(amController()) updateDoc(REF,{ "game.phase":"vote", "game.dayVotes":{} }); break;
-    case "resolve-vote": if(amController()) resolveVote(); break;
-    case "next-night": if(amController()){
-        const round=(S.game.round||1)+1;
-        updateDoc(REF,{ "game.phase":"night", "game.round":round, "game.nightActions":{},
-                        "game.log": arrayUnion({text:"🌙 Cala la notte "+round+".", kind:""}) });
-      } break;
-    case "new-game": if(amController()){
-        const updates={ status:"lobby", game:freshGame() };
-        Object.keys(S.players).forEach(pid=> updates["players."+pid+".role"]=null);
-        Object.keys(S.players).forEach(pid=> updates["players."+pid+".alive"]=true);
-        updateDoc(REF, updates);
-      } break;
+    /* player readiness: press "Continua" to be counted as ready */
+    case "ready-continue":
+      if(S.players[UID]?.alive){ updateDoc(REF,{ ["game.ready."+UID]: true }); playRoleSound("vote"); }
+      break;
+
+    /* controller phase control — in narrator mode these only fire when everyone is ready/has voted */
+    case "resolve-night": if(amController() && pendingNight().length===0) doResolveNight(); break;
+    case "to-day": if(amController() && readyGate()?.allReady) updateDoc(REF,{ "game.phase":"day", "game.ready":{} }); break;
+    case "open-vote": if(amController() && readyGate()?.allReady) updateDoc(REF,{ "game.phase":"vote", "game.dayVotes":{}, "game.ready":{} }); break;
+    case "resolve-vote": if(amController() && readyGate()?.allReady) resolveVote(); break;
+    case "next-night": if(amController() && readyGate()?.allReady) nextNight(); break;
   }
 });
 
@@ -1681,7 +1882,7 @@ function leaveRoom(){
     confirmDialog("Uscire dalla stanza?","Potrai rientrare con il codice finché la partita non inizia.", async ()=>{
       KICKED=true;
       const updates={ ["players."+UID]: deleteField() };
-      // if I'm the narrator, hand the table back to auto-moderation so the game doesn't stall
+      // se sono il narratore, rimuovo la mia assegnazione
       if(S.hasNarrator && S.narratorId===UID){ updates.hasNarrator=false; updates.narratorId=null; }
       try{ await updateDoc(REF, updates); }catch(e){ console.error(e); }
       leaveToHome();
@@ -1689,7 +1890,7 @@ function leaveRoom(){
   }
 }
 
-/* chat */
+/* chat pubblica */
 function sendChat(){
   const inp=$("#chat-input"); const txt=inp.value.trim(); if(!txt||!S) return;
   inp.value="";
@@ -1698,14 +1899,32 @@ function sendChat(){
 $("#chat-send").onclick=sendChat;
 $("#chat-input").addEventListener("keydown",e=>{ if(e.key==="Enter") sendChat(); });
 
-/* ════════════ VICTORY ANIMATIONS ════════════ */
+/* chat lupi */
+function sendWolfChat(){
+  const inp=$("#wolf-chat-input"); const txt=inp.value.trim(); if(!txt||!S) return;
+  inp.value="";
+  updateDoc(REF,{ "game.wolfChat": arrayUnion({ n:MYNAME, t:txt, ts:Date.now() }) });
+}
+$("#wolf-chat-send").onclick=sendWolfChat;
+$("#wolf-chat-input").addEventListener("keydown",e=>{ if(e.key==="Enter") sendWolfChat(); });
+
+/* ════════════ VICTORY ANIMATIONS E PROMOZIONE ════════════ */
 function showVictory(w){
   const v=$("#victory");
   if(v.dataset.shown===w){ v.classList.add("show"); return; }
   v.dataset.shown=w;
   v.innerHTML=""; v.className="victory show";
-  const isCtrl=amController();
-  const btn = `<div class="v-btn"><button class="btn ${w==='village'?'btn-gold':'btn-primary'}" data-act="${isCtrl?'new-game':''}" id="vic-btn">${isCtrl?"↻ Nuova Partita":"Resta nella stanza"}</button></div>`;
+  
+  if (!victoryMusicPlayed) {
+    playVictoryMusic(w);
+    victoryMusicPlayed = true;
+  }
+  
+  /* Banner promozionale con la papera 🦆 */
+  const promo = `<div style="margin-top: 2rem; font-family: 'Cinzel', serif; font-size: 0.95rem; color: var(--moon-dark); position:relative; z-index:2; opacity:0; animation:fadeUp .8s ease 1.2s both;">Se ti è piaciuto questo sito prova: <a href="https://boardquestspecial.online/" target="_blank" style="color: var(--gold); text-decoration: underline;">https://boardquestspecial.online/</a> 🦆</div>`;
+  
+  // Il pulsante per tornare alla lobby individualmente
+  const btn = `<div class="v-btn"><button class="btn ${w==='village'?'btn-gold':'btn-primary'}" id="vic-btn">Torna alla Sala d'Attesa</button></div>${promo}`;
 
   if(w==="wolves"){
     v.classList.add("v-wolves");
@@ -1727,8 +1946,24 @@ function showVictory(w){
       <div class="v-title">IL CRICETO TRIONFA!</div>
       <div class="v-sub">Contro ogni previsione, il solitario ha rubato la vittoria.</div>${btn}`;
   }
-  const vb=$("#vic-btn"); if(vb && isCtrl) vb.style.display="inline-flex"; else if(vb) vb.dataset.act="";
+
+  // Gestione dinamica del click per chiudere la schermata individualmente
+  setTimeout(() => {
+    const vb = $("#vic-btn");
+    if (vb) vb.onclick = () => {
+      dismissedVictory = true; // Chiudo la schermata localmente
+      if (amController() && S.status === "ended") {
+        // Se sono l'host, resetto anche il gioco per tutti in background (gli altri andranno in lobby solo premendo)
+        const updates={ status:"lobby", game:freshGame() };
+        Object.keys(S.players).forEach(pid=> updates["players."+pid+".role"]=null);
+        Object.keys(S.players).forEach(pid=> updates["players."+pid+".alive"]=true);
+        updateDoc(REF, updates);
+      }
+      render();
+    };
+  }, 50);
 }
+
 function hideVictory(){ const v=$("#victory"); v.classList.remove("show"); v.dataset.shown=""; }
 function dripsHTML(){ let h=""; for(let i=0;i<14;i++){ h+=`<div class="blood-drip" style="left:${rnd(100)}%; animation-delay:${(Math.random()*3).toFixed(2)}s; animation-duration:${(2+Math.random()*2).toFixed(2)}s;"></div>`; } return h; }
 function raysHTML(){ let h=""; for(let i=0;i<12;i++){ h+=`<div class="v-ray" style="transform:translateX(-50%) rotate(${(i-6)*14}deg); animation-delay:${(Math.random()).toFixed(2)}s;"></div>`; } return h; }
@@ -1736,7 +1971,7 @@ function confettiHTML(){ const cols=["#D4A373","#C9A84C","#F4E8C1","#C41E3A","#6
 
 /* ════════════ UTIL ════════════ */
 function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
-function playerName(uid){ return S.players[uid]?.name || "?"; }
+function playerName(uid){ if (uid === "nessuno") return "Nessuno"; return S.players[uid]?.name || "?"; }
 
 window.addEventListener("beforeunload", ()=>{ /* best-effort presence cleanup skipped */ });
 
